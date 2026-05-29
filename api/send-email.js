@@ -128,7 +128,8 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    if (data.statusCode >= 400) return res.status(400).json({ error: data.message });
+    console.log('Resend response:', JSON.stringify(data));
+    if (data.statusCode >= 400) return res.status(400).json({ error: data.message, details: data });
     return res.status(200).json({ success: true, id: data.id });
 
   } catch (err) {
