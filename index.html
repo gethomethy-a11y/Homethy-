@@ -7,16 +7,6 @@
 <title>Homethy — Home Health Scan</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://js.stripe.com/v3/">
-// ── TEST BYPASS ── add ?test=1 to URL to skip payment
-(function(){
-  if(window.location.search.includes('test=1')){
-    S.city='Vancouver';S.zip='V6B';S.email='test@homethy.com';
-    selRooms=['kitchen'];
-    const testAudit={score:42,verdict:'Critical Action Required',summary:'Your Vancouver kitchen has 2 critical findings. Non-stick cookware and unfiltered tap water are your highest-priority swaps.',pillars:{products:38,air:61,water:35},findings:[{room:'Kitchen',title:'Non-stick pan — PFAS coating daily',severity:'Critical',why:'"PFOA-free" replaced PFOA with GenX — same PFAS family. 97% of Americans carry detectable PFAS (NIH/NIEHS 2023).',yourProduct:{icon:'🍳',name:'Non-stick pan',detail:'PFAS coating daily',verdict:'Risky'},swap:{icon:'🥘',name:'Lodge Seasoned Cast Iron Skillet 10"',price:'$25–$35',why:'Zero coatings, lasts 50+ years, adds iron to food.'}},{room:'Kitchen',title:'No filter — unfiltered tap water',severity:'Critical',why:'Unfiltered tap water in Vancouver contains chlorine byproducts and trace heavy metals. 45% of US tap water contains PFAS (USGS 2023).',yourProduct:{icon:'🚰',name:'No filter — tap water directly',detail:'Unfiltered daily',verdict:'Risky'},swap:{icon:'💧',name:'Waterdrop D6 Countertop RO System',price:'$189',why:'Removes 99%+ of PFAS, no plumber needed.'}}]};
-    buildResults(testAudit);
-    goTo('s-results',false);
-  }
-})();
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -1706,6 +1696,33 @@ function shareDeepScore(){
   else copyLink();
 }
 
+
+// ── TEST BYPASS — open ?test=1 to skip payment ──
+window.addEventListener('DOMContentLoaded', function() {
+  if (!window.location.search.includes('test=1')) return;
+  S.city = 'Vancouver'; S.zip = 'V6B'; S.email = 'test@homethy.com';
+  selRooms = ['kitchen'];
+  const testAudit = {
+    score: 42,
+    verdict: 'Critical Action Required',
+    summary: 'Your Vancouver kitchen has 2 critical findings. Non-stick cookware and unfiltered tap water are your top priorities.',
+    pillars: { products: 38, air: 61, water: 35 },
+    findings: [
+      { room: 'Kitchen', title: 'Non-stick pan — PFAS coating daily', severity: 'Critical',
+        why: '"PFOA-free" coatings replaced PFOA with GenX — same PFAS family. 97% of Americans carry detectable PFAS (NIH/NIEHS 2023).',
+        yourProduct: { icon: '🍳', name: 'Non-stick pan', detail: 'PFAS coating daily', verdict: 'Risky' },
+        swap: { icon: '🥘', name: 'Lodge Seasoned Cast Iron Skillet 10 inch', price: '$25–$35', why: 'Zero coatings, lasts 50+ years, adds iron to food.' }
+      },
+      { room: 'Kitchen', title: 'No water filter — PFAS unfiltered', severity: 'Critical',
+        why: 'Unfiltered tap water exposes you to chlorine byproducts and PFAS daily. 45% of US tap water contains PFAS (USGS 2023).',
+        yourProduct: { icon: '🚰', name: 'No filter — tap water directly', detail: 'Unfiltered daily', verdict: 'Risky' },
+        swap: { icon: '💧', name: 'Waterdrop D6 Countertop RO System', price: '$189', why: 'Removes 99%+ of PFAS, no plumber needed, countertop install.' }
+      }
+    ]
+  };
+  buildResults(testAudit);
+  goTo('s-results', false);
+});
 </script>
 </body>
 </html>
