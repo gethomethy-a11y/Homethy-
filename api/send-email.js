@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        from: 'Homethy <results@gethomethy.com>',
+        from: 'Homethy <onboarding@resend.dev>',
         to: email,
         subject: 'Your Homethy Home Health Results — Score: ' + score + '/100',
         html: `
