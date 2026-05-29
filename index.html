@@ -926,7 +926,7 @@ function lookupZip(zip, country){
       d = getWaterDataCountry(zip, country) || {city: (_co?_co.flag+' ':'')+zip.toUpperCase(), items:[]};
     } else {
       const regionCity = getRegionFromPostcode(zip, country);
-      const countryData = WATER_COUNTRY_DEF ? (WATER_COUNTRY_DEF[country] || {items:[{n:'Chlorine byproducts',d:'Standard disinfection byproducts.',c:'y',s:'Detected'},{n:'Lead',d:'Risk in older buildings.',c:'y',s:'Monitored'}]}) : {items:[]};
+      const countryData = {items:[{n:'Chlorine byproducts',d:'Standard disinfection byproducts.',c:'y',s:'Detected'},{n:'Lead',d:'Risk in older buildings.',c:'y',s:'Monitored'}]};
       const cityName = regionCity || ((_co?_co.flag+' ':'')+zip.toUpperCase()+', '+(_co?_co.name:''));
       d = {...countryData, city: cityName};
     }
@@ -1316,7 +1316,7 @@ async function runDeepAnalysis(){
 }
 
 async function callDeepClaude(){
-  const water = WATER[S.zip] || DEF;
+  const water = WATER[S.zip] || {city:"Your area",items:[{n:"PFAS compounds",d:"45% of US tap water contains PFAS (USGS 2023).",c:"r",s:"Nationally detected"},{n:"Lead",d:"Risk in pre-1986 homes.",c:"r",s:"Monitored"}]};
   const waterIssues = water.items.map(i=>i.n).join(', ');
   const deepAnswerList = deepProducts.length
     ? deepProducts.map(p => '- User answered: "'+p.name+'" — risk: '+(p.risk==='r'?'Critical':p.risk==='y'?'Moderate':'Low')).join('\n')
