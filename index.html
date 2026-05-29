@@ -704,111 +704,486 @@ nav{height:54px;flex-shrink:0;display:flex;align-items:center;padding:0 18px;bac
 
 <script>
 const S={screen:'s-welcome',history:[],zip:'',city:'',country:'us',name:'',email:'',allQ:[],qIdx:0,answers:{},products:[]};
-const WATER_US = {
-  // Northeast
-  'NY': {city:'New York, NY',items:[{n:'Lead',d:'Pre-1986 pipes still common — NYC has 400,000+ lead service lines. No safe level exists.',c:'r',s:'Critical'},{n:'Chromium-6',d:'IARC Group 1 carcinogen detected above EWG guidelines.',c:'r',s:'Above guideline'},{n:'Chloroform',d:'Disinfection byproduct from chlorination of organic matter.',c:'y',s:'Elevated'}]},
-  'NJ': {city:'New Jersey',items:[{n:'PFAS compounds',d:'NJ has one of the highest PFAS contamination rates — 4 ng/L MCL is stricter than EPA federal.',c:'r',s:'Above old EPA limit'},{n:'Lead',d:'Older housing stock with lead service lines.',c:'r',s:'Elevated'},{n:'Trihalomethanes',d:'Chlorination byproducts above EWG guidelines.',c:'y',s:'Elevated'}]},
-  'MA': {city:'Massachusetts',items:[{n:'PFAS compounds',d:'MA has widespread PFAS from firefighting foam — Hyannis and Ayer above state limits.',c:'r',s:'Above limit in affected areas'},{n:'Trihalomethanes',d:'Chlorination byproducts elevated in Boston area.',c:'y',s:'Elevated'},{n:'Radium',d:'Elevated in some western MA groundwater sources.',c:'y',s:'Monitored'}]},
-  'PA': {city:'Pennsylvania',items:[{n:'Lead',d:'Pittsburgh replaced lead lines in 2016 — but Philadelphia still has 30,000+ lead service lines.',c:'r',s:'Critical in Philadelphia'},{n:'Atrazine',d:'Agricultural herbicide detected in PA groundwater — endocrine disruptor.',c:'y',s:'Detected'},{n:'Trihalomethanes',d:'Chlorination byproducts elevated in Philadelphia water.',c:'y',s:'Elevated'}]},
-  'CT': {city:'Connecticut',items:[{n:'PFAS compounds',d:'CT groundwater contaminated near Groton and Trumbull — military/industrial sources.',c:'r',s:'Above EPA limit'},{n:'Radium',d:'Naturally elevated in CT bedrock geology.',c:'y',s:'Monitored'},{n:'Lead',d:'Older homes with lead service lines.',c:'y',s:'Risk in pre-1986 homes'}]},
-  // Midwest
-  'IL': {city:'Illinois',items:[{n:'Lead',d:'Chicago has the most lead service lines in the US — 400,000+ still active.',c:'r',s:'Critical'},{n:'PFAS compounds',d:'Persistent chemicals accumulating in blood and tissue — detected above EPA limit.',c:'r',s:'Above EPA limit'},{n:'Nitrates',d:'Agricultural runoff elevated in downstate Illinois.',c:'y',s:'Elevated'}]},
-  'MI': {city:'Michigan',items:[{n:'Lead',d:'Flint crisis exposed systemic lead pipe failure — Detroit still replacing lead lines.',c:'r',s:'Critical legacy risk'},{n:'PFAS compounds',d:'MI has most PFAS-contaminated sites in US — near military bases and Wolverine Worldwide sites.',c:'r',s:'Above EPA limit'},{n:'Nitrates',d:'Agricultural runoff in western Michigan.',c:'y',s:'Elevated'}]},
-  'OH': {city:'Ohio',items:[{n:'Nitrates',d:'Ohio farm runoff — Lake Erie algal blooms have triggered Toledo water shutdowns.',c:'r',s:'Elevated — algal toxin risk'},{n:'PFAS compounds',d:'Detected near military bases and industrial sites.',c:'r',s:'Above EPA limit'},{n:'Lead',d:'Cleveland and Columbus have older lead service line infrastructure.',c:'y',s:'Risk in older areas'}]},
-  'MN': {city:'Minnesota',items:[{n:'PFAS compounds',d:'3M\'s manufacturing legacy — East Metro MN has some of highest PFAS levels in US.',c:'r',s:'Critical in East Metro'},{n:'Nitrates',d:'Agricultural runoff elevated in southern MN.',c:'y',s:'Elevated'},{n:'Arsenic',d:'Naturally elevated in some MN groundwater.',c:'y',s:'Monitored'}]},
-  // South
-  'TX': {city:'Texas',items:[{n:'PFAS compounds',d:'Detected in Austin, San Antonio, and Houston supplies — above EPA 2024 limits.',c:'r',s:'Above EPA limit'},{n:'Haloacetic acids',d:'Disinfection byproduct linked to bladder effects.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Chlorination byproduct above EWG health guidelines.',c:'y',s:'Elevated'}]},
-  'FL': {city:'Florida',items:[{n:'PFAS compounds',d:'Widespread contamination from military bases — Pensacola and Patrick AFB areas critical.',c:'r',s:'Above EPA limit'},{n:'Nitrates',d:'Agricultural and septic runoff elevated in central FL.',c:'y',s:'Elevated'},{n:'Radium',d:'Naturally elevated in Florida limestone aquifer — above EPA limits in some utilities.',c:'r',s:'Above EPA limit in some areas'}]},
-  'GA': {city:'Georgia',items:[{n:'PFAS compounds',d:'Detected near Robins AFB and Rome, GA — above EPA limit.',c:'r',s:'Above EPA limit'},{n:'Trihalomethanes',d:'Elevated in Atlanta area chlorinated supply.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1986 Atlanta homes with lead service lines.',c:'y',s:'Risk in older areas'}]},
-  'NC': {city:'North Carolina',items:[{n:'PFAS (GenX)',d:'Cape Fear River contamination from Chemours plant — Wilmington water crisis.',c:'r',s:'Critical — Wilmington area'},{n:'Nitrates',d:'Agricultural runoff elevated in eastern NC.',c:'y',s:'Elevated'},{n:'Lead',d:'Older housing stock in Charlotte and Durham.',c:'y',s:'Monitored'}]},
-  // West
-  'CA': {city:'California',items:[{n:'Chromium-6',d:'Known carcinogen — 200M+ Americans exposed, particularly elevated in CA Central Valley.',c:'r',s:'Above EWG guideline'},{n:'Nitrates',d:'Central Valley agricultural runoff — 1M+ Californians drink contaminated water.',c:'r',s:'Above limit in rural areas'},{n:'Arsenic',d:'Naturally elevated in CA desert groundwater.',c:'y',s:'Elevated in desert regions'}]},
-  'WA': {city:'Washington State',items:[{n:'PFAS compounds',d:'Detected near Joint Base Lewis-McChord and Whidbey Island NAS.',c:'r',s:'Above EPA limit near bases'},{n:'Lead',d:'Seattle and Tacoma older homes with lead lines.',c:'y',s:'Risk in pre-1986 homes'},{n:'Nitrates',d:'Agricultural runoff in eastern WA.',c:'y',s:'Elevated'}]},
-  'OR': {city:'Oregon',items:[{n:'Nitrates',d:'Willamette Valley agriculture elevated in groundwater.',c:'y',s:'Elevated'},{n:'PFAS compounds',d:'Detected near Portland International Airport.',c:'y',s:'Monitored'},{n:'Lead',d:'Portland older housing — lead service lines.',c:'y',s:'Risk in older homes'}]},
-  'AZ': {city:'Arizona',items:[{n:'Arsenic',d:'Naturally elevated in AZ desert groundwater — above EPA limit in some rural wells.',c:'r',s:'Above EPA limit in rural areas'},{n:'Chromium-6',d:'Detected above EWG guidelines in Phoenix and Tucson.',c:'r',s:'Above EWG guideline'},{n:'Nitrates',d:'Agricultural runoff in AZ farming regions.',c:'y',s:'Elevated'}]},
-  'CO': {city:'Colorado',items:[{n:'PFAS compounds',d:'Military base contamination — Peterson AFB and Buckley AFB areas critical.',c:'r',s:'Above EPA limit near bases'},{n:'Nitrates',d:'Eastern plains agricultural runoff.',c:'y',s:'Elevated'},{n:'Uranium',d:'Naturally elevated in some CO mountain groundwater.',c:'y',s:'Monitored'}]},
-  'DEFAULT': {city:'United States',items:[{n:'PFAS compounds',d:'45% of US tap water contains PFAS (USGS 2023). No safe level established.',c:'r',s:'Nationally detected'},{n:'Lead',d:'10 million US homes still have lead service lines.',c:'r',s:'Risk in pre-1986 homes'},{n:'Trihalomethanes',d:'Chlorination byproducts present in most municipal supplies.',c:'y',s:'Elevated'}]},
-};
+const WATER={'78701':{city:'Austin, TX',items:[{n:'PFAS compounds',d:'Detected in supply. Linked to immune disruption and hormone interference.',c:'r',s:'Above guideline'},{n:'Haloacetic acids',d:'Disinfection byproduct from chlorination. Linked to bladder effects.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Chlorination byproduct above EWG health guidelines.',c:'y',s:'Elevated'}]},'10001':{city:'New York, NY',items:[{n:'Lead',d:'Old pipes pre-1986. No safe level of lead exists.',c:'r',s:'Critical'},{n:'Chromium-6',d:'IARC carcinogen linked to stomach cancer.',c:'r',s:'Above guideline'},{n:'Chloroform',d:'Disinfection byproduct from chlorination.',c:'y',s:'Elevated'}]},'90210':{city:'Beverly Hills, CA',items:[{n:'Chromium-6',d:'Known carcinogen above EWG guidelines in supply.',c:'r',s:'Above guideline'},{n:'Nitrates',d:'Agricultural runoff. Interferes with blood oxygen.',c:'y',s:'Elevated'}]},'60601':{city:'Chicago, IL',items:[{n:'Lead',d:'Chicago has the most lead service lines in the US.',c:'r',s:'Critical'},{n:'PFAS compounds',d:'Persistent chemicals accumulating in blood and tissue.',c:'r',s:'Above guideline'},{n:'Manganese',d:'Linked to neurological effects at elevated levels.',c:'y',s:'Elevated'}]}};
+const DEF={city:'Your area',items:[{n:'PFAS compounds',d:'45% of US tap water contains PFAS (USGS 2023).',c:'r',s:'Detected nationally'},{n:'Disinfection byproducts',d:'Chlorine reacts with organic matter in water.',c:'y',s:'Elevated'},{n:'Chromium-6',d:'Present in 200M+ Americans water supply.',c:'y',s:'Low level detected'}]};
+const QS={
+kitchen:[
+  {id:'cookware',title:'What <span class="g">pans and pots</span> do you cook with most?',why:'<strong>"PFOA-free" non-stick pans</strong> still contain GenX — a newer PFAS chemical with the same health risks. 97% of Americans have detectable PFAS in their blood (NIH).',opts:[
+    {i:'🍳',n:'Non-stick (Teflon or PTFE)',h:'T-fal, most standard pans',r:'r',l:'PFAS coating'},
+    {i:'🍳',n:'"PFOA-free" non-stick',h:'Newer "green" brands',r:'r',l:'GenX substitute'},
+    {i:'🫕',n:'Ceramic coated',h:'Always, GreenPan',r:'y',l:'Verify coating'},
+    {i:'🥘',n:'Cast iron or carbon steel',h:'Lodge, de Buyer',r:'s',l:'PFAS-free ✓'},
+    {i:'🍲',n:'Stainless steel',h:'All-Clad, Tramontina',r:'s',l:'Safe ✓'}
+  ]},
+  {id:'water',title:'How do you <span class="g">filter your drinking water?</span>',why:'<strong>Pitcher filters like Brita don\'t remove PFAS</strong>, chromium-6, or nitrates at all. 45% of US tap water contains PFAS (USGS 2023).',opts:[
+    {i:'🚿',n:'Straight from the tap, no filter',h:'No filter at all',r:'r',l:'Unfiltered'},
+    {i:'🧊',n:'Brita or other pitcher filter',h:'Removes taste, not PFAS',r:'r',l:'PFAS not removed'},
+    {i:'❄️',n:'Built-in fridge filter',h:'Refrigerator water dispenser',r:'y',l:'Partial only'},
+    {i:'💧',n:'Reverse osmosis system',h:'Waterdrop, APEC, iSpring',r:'s',l:'PFAS removed ✓'},
+    {i:'🫗',n:'Berkey gravity filter',h:'Countertop gravity filter',r:'s',l:'Good coverage ✓'}
+  ]},
+  {id:'stove',title:'Do you <span class="g">cook on a gas stove?</span>',why:'Gas stoves release <strong>benzene — a cancer-causing chemical</strong> — that stays in your air for up to 24 hours after cooking, even reaching bedroom levels (Stanford 2024).',opts:[
+    {i:'🔥',n:'Gas — no fan or window open',h:'No ventilation while cooking',r:'r',l:'Max benzene risk'},
+    {i:'🔥',n:'Gas — I turn on the range hood',h:'Hood recirculates inside air',r:'r',l:'Hood recirculates air'},
+    {i:'🔥',n:'Gas — hood vents outside + window open',h:'Real outside ventilation',r:'y',l:'Better, not perfect'},
+    {i:'⚡',n:'Electric or glass-top',h:'Standard electric stove',r:'s',l:'No combustion ✓'},
+    {i:'✨',n:'Induction cooktop',h:'Magnetic, no flame',r:'s',l:'Safest option ✓'}
+  ]},
+  {id:'cleaning',title:'What <span class="g">dish soap and kitchen cleaner</span> do you use?',why:'The word "<strong>Fragrance</strong>" on a label legally hides up to 3,000 undisclosed chemicals. EU law requires full disclosure — US law does not.',opts:[
+    {i:'🧹',n:'Clorox, Windex, or similar',h:'Standard store cleaning sprays',r:'r',l:'Hidden chemicals'},
+    {i:'🧴',n:'Dawn or regular dish soap',h:'Most common dish soap',r:'y',l:'Fragrance loophole'},
+    {i:'🌿',n:'"Natural" brand but still has fragrance',h:'Method, Mrs. Meyers',r:'y',l:'Check the label'},
+    {i:'✅',n:'Branch Basics or Blueland',h:'Fully transparent ingredients',r:'s',l:'Fully disclosed ✓'},
+    {i:'🌿',n:'Seventh Generation Free & Clear',h:'EWG verified, no fragrance',r:'s',l:'EWG verified ✓'}
+  ]},
+  {id:'storage',title:'Do you <span class="g">heat food in plastic containers?</span>',why:'"Microwave-safe" just means the plastic won\'t melt — not that it\'s safe. <strong>Heat makes BPA and phthalates leak directly into your food</strong>.',opts:[
+    {i:'🔥',n:'Yes — I microwave in plastic regularly',h:'Reheating leftovers in plastic',r:'r',l:'Heat speeds leaching'},
+    {i:'📦',n:'Plastic for storing, not heating',h:'Plastic in the fridge only',r:'y',l:'Lower risk, still BPA'},
+    {i:'🫙',n:'Glass containers (Pyrex, mason jars)',h:'Glass for storage and heating',r:'s',l:'Safe ✓'},
+    {i:'🥡',n:'Stainless steel containers',h:'Metal lunch boxes',r:'s',l:'Safe ✓'},
+    {i:'🧊',n:'Silicone or beeswax wraps',h:'Stasher bags, reusable wraps',r:'s',l:'Generally safe ✓'}
+  ]},
+  {id:'coffee',title:'What do you <span class="g">drink hot coffee or tea from?</span>',why:'Paper cups from coffee shops have a <strong>plastic lining that releases up to 25,000 microplastic particles</strong> into your hot drink (Nature Food 2023).',opts:[
+    {i:'☕',n:'Paper cups from a coffee shop daily',h:'Daily takeaway coffee habit',r:'r',l:'Plastic-lined inside'},
+    {i:'🥤',n:'Plastic travel mug or tumbler',h:'Standard plastic thermos',r:'y',l:'Leaches when hot'},
+    {i:'🫖',n:'Ceramic mug',h:'Standard coffee mug at home',r:'s',l:'Safe ✓'},
+    {i:'🥤',n:'Stainless steel thermos',h:'Yeti, Stanley, Hydro Flask',r:'s',l:'Safe ✓'},
+    {i:'🍶',n:'Glass mug or cup',h:'Borosilicate glass',r:'s',l:'Safest ✓'}
+  ]},
+  {id:'kitchen-air',title:'Do you open a window or use the hood <span class="g">while cooking?</span>',why:'Even electric cooking releases <strong>harmful particles and VOCs</strong> that spread through your home and linger for hours without ventilation.',opts:[
+    {i:'💨',n:'No — I cook with everything closed',h:'No ventilation at all',r:'r',l:'No air exchange'},
+    {i:'🪟',n:'I open a window sometimes',h:'Occasional ventilation',r:'y',l:'Some exchange ✓'},
+    {i:'🌿',n:'Range hood on — but it recirculates',h:'Filter hood, no outside vent',r:'y',l:'Filters some particles'},
+    {i:'✅',n:'Hood vents outside + window open',h:'Real outside ventilation',r:'s',l:'Active removal ✓'}
+  ]},
+  {id:'nonstick-baking',title:'Do you use <span class="g">non-stick baking pans or parchment paper?</span>',why:'Non-stick bakeware has <strong>coatings that release PFAS fumes at oven temperatures</strong>. Standard bleached parchment also has trace chlorine compounds.',opts:[
+    {i:'🍞',n:'Non-stick baking trays or pans',h:'Standard non-stick bakeware',r:'r',l:'PFAS at oven heat'},
+    {i:'📄',n:'Regular parchment or wax paper',h:'Standard baking paper',r:'y',l:'Bleached — chlorine trace'},
+    {i:'✅',n:'Unbleached parchment paper',h:'If You Care or similar brand',r:'s',l:'No chlorine ✓'},
+    {i:'🥣',n:'Ceramic or glass bakeware',h:'Pyrex, stoneware',r:'s',l:'Safe ✓'},
+    {i:'🫙',n:'Stainless steel or cast iron',h:'No coatings at all',r:'s',l:'PFAS-free ✓'}
+  ]}
+],
+bedroom:[
+  {id:'furniture',title:'How <span class="g">old is your bedroom furniture?</span>',why:'Particle board and MDF furniture (like most IKEA) releases <strong>formaldehyde gas for up to 5 years</strong> — most concentrated in the room you sleep in.',opts:[
+    {i:'🪑',n:'Bought new in the last year',h:'Brand new furniture',r:'r',l:'Peak off-gassing'},
+    {i:'🪑',n:'1–3 years old',h:'Relatively recent',r:'y',l:'Still off-gassing'},
+    {i:'🪑',n:'3+ years old',h:'Well used by now',r:'s',l:'Low risk ✓'},
+    {i:'🪵',n:'Solid wood — no particle board',h:'Real wood furniture',r:'s',l:'No formaldehyde ✓'},
+    {i:'♻️',n:'Vintage or second-hand',h:'Used furniture',r:'s',l:'Already off-gassed ✓'}
+  ]},
+  {id:'mattress',title:'What type of <span class="g">mattress</span> do you sleep on?',why:'Foam mattresses release <strong>flame retardants and VOC chemicals into the air all night</strong> — during the 8 hours you breathe the most.',opts:[
+    {i:'🛏',n:'Memory foam (Casper, Purple, Nectar...)',h:'Popular online mattress brands',r:'r',l:'VOC off-gassing'},
+    {i:'🛏',n:'Innerspring with foam on top',h:'Standard hybrid mattress',r:'y',l:'Some off-gassing'},
+    {i:'🌿',n:'Natural latex (certified)',h:'Avocado, Naturepedic',r:'s',l:'Low VOC ✓'},
+    {i:'✅',n:'GOTS or GREENGUARD certified',h:'Independently verified safe',r:'s',l:'Certified safe ✓'}
+  ]},
+  {id:'pillow',title:'Is your pillow <span class="g">foam or natural filling?</span>',why:'Foam pillows release <strong>chemicals directly at face level</strong> — just 5 cm from your nose — for 8 hours straight every single night.',opts:[
+    {i:'😴',n:'Memory foam pillow',h:'Tempur-Pedic, IKEA foam',r:'r',l:'Off-gases at face'},
+    {i:'😴',n:'Polyester fill — soft and fluffy',h:'Most cheap pillows',r:'y',l:'Synthetic chemicals'},
+    {i:'🪶',n:'Down or feather fill',h:'Natural goose or duck fill',r:'s',l:'Natural ✓'},
+    {i:'🌾',n:'Buckwheat or kapok fill',h:'Hullo, Naturepedic',r:'s',l:'Best option ✓'},
+    {i:'🌿',n:'Organic latex pillow',h:'Avocado, Saatva',r:'s',l:'Low VOC ✓'}
+  ]},
+  {id:'phone',title:'Where is your <span class="g">phone when you sleep?</span>',why:'Phones emit radiation while charging all night. <strong>6 feet of distance reduces exposure by over 90%</strong> — most people sleep with their phone 30 cm from their head.',opts:[
+    {i:'📱',n:'On my nightstand right next to me',h:'Within arm\'s reach',r:'r',l:'Max EMF exposure'},
+    {i:'📱',n:'On the bed — on or under the pillow',h:'Directly on the mattress',r:'r',l:'Direct contact'},
+    {i:'📵',n:'On a dresser across the room',h:'3–6 feet away from the bed',r:'y',l:'Reduced exposure'},
+    {i:'🚫',n:'Outside the bedroom entirely',h:'In the hallway or living room',r:'s',l:'Best practice ✓'},
+    {i:'✈️',n:'In the room but on airplane mode',h:'No signal = no radiation',r:'s',l:'No EMF ✓'}
+  ]},
+  {id:'bed-air',title:'What\'s <span class="g">running in your bedroom at night?</span>',why:'You breathe bedroom air for 8 hours straight. Without any filtration, <strong>chemicals from furniture and fabric build up overnight</strong> in a closed room.',opts:[
+    {i:'💨',n:'Nothing — windows closed',h:'Sealed room all night',r:'r',l:'No air exchange'},
+    {i:'🕯',n:'Scented candles or wax melts sometimes',h:'Any scented items in bedroom',r:'r',l:'VOC source overnight'},
+    {i:'🪟',n:'Window open most nights',h:'Natural fresh air',r:'y',l:'Some exchange ✓'},
+    {i:'🌿',n:'HEPA air purifier running',h:'Levoit, Coway, Blueair',r:'s',l:'Active filtering ✓'}
+  ]},
+  {id:'bedding',title:'What do you <span class="g">wash your sheets with?</span>',why:'Dryer sheets <strong>coat every fabric fiber with fragrance chemicals</strong> that absorb through your skin during 8 hours of direct contact every night.',opts:[
+    {i:'🌙',n:'Scented detergent and dryer sheets',h:'Tide + Bounce together',r:'r',l:'High skin absorption'},
+    {i:'🌙',n:'Scented detergent only',h:'Tide, Persil, Gain with scent',r:'y',l:'Fragrance on skin'},
+    {i:'🌬',n:'Dryer sheets only, neutral detergent',h:'Bounce or Downy dryer sheets',r:'y',l:'Coating on fabric'},
+    {i:'✅',n:'Fragrance-free detergent, no dryer sheets',h:'Free & Clear versions',r:'s',l:'Good choice ✓'},
+    {i:'🌿',n:'Seventh Generation Free & Clear',h:'EWG verified',r:'s',l:'EWG verified ✓'}
+  ]},
+  {id:'light',title:'What do you do with <span class="g">screens and lights before bed?</span>',why:'Blue light from phones and TVs <strong>cuts melatonin production by up to 50%</strong> and pushes back your sleep by 1–3 hours (Harvard Medical School).',opts:[
+    {i:'📱',n:'Scrolling on my phone until I fall asleep',h:'Screens the whole evening',r:'r',l:'Max melatonin block'},
+    {i:'💡',n:'Bright white overhead lights until bedtime',h:'Standard ceiling lighting',r:'y',l:'Blue light exposure'},
+    {i:'🟡',n:'Dim or warm lamps in the evening',h:'Warm bulbs, not overhead',r:'s',l:'Better choice ✓'},
+    {i:'🌙',n:'Screens off 1 hour before, dark room',h:'Strict wind-down routine',r:'s',l:'Best practice ✓'}
+  ]},
+  {id:'deodorant',title:'What <span class="g">deodorant</span> do you use?',why:'Standard antiperspirants contain <strong>aluminum that absorbs daily through skin next to your lymph nodes</strong> — the most sensitive tissue in your underarm.',opts:[
+    {i:'💨',n:'Antiperspirant with aluminum',h:'Degree, Old Spice, Secret',r:'r',l:'Aluminum daily'},
+    {i:'🌿',n:'Natural deodorant — but with fragrance',h:'Native, Schmidts fragranced',r:'y',l:'Fragrance exposure'},
+    {i:'✅',n:'Natural, fragrance-free deodorant',h:'Native unscented, Lume',r:'s',l:'Safe ✓'},
+    {i:'🌿',n:'EWG Skin Deep verified deodorant',h:'Verified no flagged ingredients',r:'s',l:'Fully checked ✓'}
+  ]}
+],
+bathroom:[
+  {id:'shower',title:'Do you have a <span class="g">shower filter?</span>',why:'Hot showers turn chlorine into steam — you breathe it for 10 straight minutes. <strong>Showering can expose you to more chlorine than drinking tap water</strong> (EPA).',opts:[
+    {i:'🚿',n:'No filter — standard showerhead',h:'Most homes and apartments',r:'r',l:'Chlorine steam daily'},
+    {i:'🚿',n:'Not sure — never thought about it',h:'Unknown status',r:'r',l:'Likely unfiltered'},
+    {i:'✅',n:'Carbon shower filter',h:'Removes about 85% of chlorine',r:'s',l:'Good coverage ✓'},
+    {i:'✅',n:'Vitamin C or multi-stage filter',h:'Removes chlorine and chloramines',r:'s',l:'Best available ✓'}
+  ]},
+  {id:'shampoo',title:'What <span class="g">shampoo</span> do you use?',why:'Most shampoos contain <strong>sulfates and synthetic fragrance that absorb through your scalp</strong> every day — the scalp has some of the highest absorption rates on your body.',opts:[
+    {i:'🧴',n:'Pantene, TRESemmé, Dove, or similar',h:'Standard supermarket brands',r:'r',l:'Sulfates and fragrance'},
+    {i:'🌿',n:'"Natural" brand but still has fragrance',h:'Herbal Essences, OGX',r:'y',l:'Fragrance loophole'},
+    {i:'✅',n:'Sulfate-free, fragrance-free shampoo',h:'Free & Clear, Vanicream',r:'s',l:'Good choice ✓'},
+    {i:'🌿',n:'EWG Skin Deep verified shampoo',h:'Checked ingredient by ingredient',r:'s',l:'Fully verified ✓'}
+  ]},
+  {id:'soap-b',title:'What <span class="g">body wash or soap</span> do you use?',why:'Many body washes contain <strong>triclosan, parabens, and fragrance that absorb through skin</strong> every time you shower.',opts:[
+    {i:'🫧',n:'Regular liquid body wash',h:'Dial, Softsoap, Dove body wash',r:'y',l:'Fragrance and parabens'},
+    {i:'🧼',n:'Antibacterial soap',h:'Anything labeled "antibacterial"',r:'r',l:'Endocrine disruptor'},
+    {i:'🌿',n:'Unscented castile soap',h:'Dr. Bronner\'s unscented',r:'s',l:'Safe ✓'},
+    {i:'✅',n:'EWG-verified bar or liquid soap',h:'Verified no harmful chemicals',r:'s',l:'Fully checked ✓'}
+  ]},
+  {id:'cleaning-b',title:'What do you <span class="g">clean the bathroom with?</span>',why:'Bathroom cleaners are the <strong>most concentrated source of harmful VOCs in your home</strong> — used in a small enclosed space with almost no ventilation.',opts:[
+    {i:'🧽',n:'Bleach spray or Lysol',h:'Clorox, Lysol products',r:'r',l:'Chlorine gas + VOCs'},
+    {i:'🧹',n:'Windex, 409, or similar sprays',h:'Conventional multi-surface sprays',r:'y',l:'Ammonia and fragrance'},
+    {i:'✅',n:'Branch Basics or Seventh Generation',h:'EWG-verified cleaners',r:'s',l:'Safe ✓'},
+    {i:'🌿',n:'Vinegar and baking soda',h:'DIY natural cleaning',r:'s',l:'No chemicals ✓'}
+  ]},
+  {id:'toothpaste',title:'What <span class="g">toothpaste</span> do you use?',why:'Standard toothpastes contain <strong>SLS (sodium lauryl sulfate) that absorbs through the inside of your mouth</strong> twice a day — one of the highest-absorption areas of the body.',opts:[
+    {i:'🦷',n:'Colgate, Crest, or similar',h:'Most common brands',r:'y',l:'SLS twice daily'},
+    {i:'🌿',n:'Tom\'s of Maine or Jason',h:'"Natural" — may still have SLS',r:'y',l:'Check for SLS'},
+    {i:'✅',n:'SLS-free toothpaste',h:'Sensodyne ProNamel, RiseWell',r:'s',l:'Better choice ✓'},
+    {i:'🌿',n:'Fluoride-free natural toothpaste',h:'Weleda, Dr. Bronner\'s',r:'s',l:'No SLS ✓'}
+  ]},
+  {id:'lotion',title:'What <span class="g">body lotion</span> do you put on daily?',why:'Conventional lotions contain <strong>parabens and synthetic fragrance that absorb straight through your skin</strong> — your largest organ — every single day.',opts:[
+    {i:'🧴',n:'Cetaphil, Aveeno, or Lubriderm',h:'Standard pharmacy moisturizers',r:'y',l:'Fragrance and parabens'},
+    {i:'🌿',n:'"Natural" brand — but has fragrance',h:'Natural brands with added scent',r:'y',l:'Fragrance loophole'},
+    {i:'✅',n:'Fragrance-free lotion',h:'Vanicream, CeraVe Fragrance-Free',r:'s',l:'Good choice ✓'},
+    {i:'🌿',n:'EWG-verified personal care',h:'Verified by Skin Deep database',r:'s',l:'Fully checked ✓'}
+  ]},
+  {id:'ventilation-b',title:'Do you open the window or run the fan <span class="g">after a shower?</span>',why:'Mold spores and cleaning product residue <strong>linger in a humid bathroom for hours</strong> without active ventilation.',opts:[
+    {i:'🚿',n:'No — door closed, no fan or window',h:'Sealed bathroom',r:'r',l:'Mold and VOC buildup'},
+    {i:'💨',n:'Fan on sometimes',h:'Occasional use only',r:'y',l:'Some ventilation'},
+    {i:'✅',n:'Fan on every shower — stays on 15 min after',h:'Consistent habit',r:'s',l:'Good practice ✓'},
+    {i:'🪟',n:'Fan on and window open every day',h:'Full air exchange',r:'s',l:'Best ventilation ✓'}
+  ]},
+  {id:'hairspray-b',title:'Do you use <span class="g">hairspray, dry shampoo, or aerosol sprays?</span>',why:'Aerosol sprays release a <strong>cloud of VOCs and fragrance chemicals directly into your breathing zone</strong> — one of the most direct daily chemical exposures.',opts:[
+    {i:'💨',n:'Hairspray — several times a week',h:'Standard hold sprays',r:'r',l:'VOC cloud direct inhale'},
+    {i:'🌸',n:'Dry shampoo spray — regular use',h:'Batiste, Not Your Mother\'s',r:'r',l:'Butane + fragrance'},
+    {i:'🌿',n:'Aerosol sprays occasionally',h:'A few times per month',r:'y',l:'Lower exposure'},
+    {i:'✅',n:'Pump or non-aerosol products only',h:'Cream, serum, pump bottle formats',r:'s',l:'No aerosol ✓'},
+    {i:'🚫',n:'No sprays at all',h:'Completely spray-free routine',r:'s',l:'Best practice ✓'}
+  ]}
+],
+air:[
+  {id:'candles-a',title:'Do you <span class="g">burn candles</span> at home?',why:'Paraffin candles release <strong>benzene and toluene — both carcinogens</strong> — every single time they burn inside your home.',opts:[
+    {i:'🕯',n:'Paraffin candles regularly',h:'Most store-bought candles',r:'r',l:'Benzene emission'},
+    {i:'🕯',n:'Soy candles with added fragrance',h:'"Natural soy" with scent',r:'y',l:'Fragrance chemicals'},
+    {i:'🌿',n:'Beeswax or coconut wax — unscented',h:'Pure wax, no added fragrance',r:'s',l:'Clean burning ✓'},
+    {i:'🚫',n:'No candles at all',h:'Candle-free home',r:'s',l:'No combustion ✓'}
+  ]},
+  {id:'purifier',title:'Do you have an <span class="g">air purifier?</span>',why:'Indoor air is <strong>2–5× more polluted than outdoor air</strong> (US EPA). Without active filtration, harmful chemicals and particles build up in every room.',opts:[
+    {i:'💨',n:'No air purifier anywhere',h:'No active filtration',r:'r',l:'No filtration'},
+    {i:'🌫',n:'Ionic or ozone-type purifier',h:'Older style purifiers',r:'y',l:'Ozone is itself a pollutant'},
+    {i:'✅',n:'True HEPA purifier',h:'Levoit, Coway, Blueair',r:'s',l:'Removes particles ✓'},
+    {i:'🌿',n:'HEPA + activated carbon filter',h:'Removes VOCs and particles',r:'s',l:'Best available ✓'}
+  ]},
+  {id:'hvac',title:'When did you last change your <span class="g">air filter?</span>',why:'A dirty HVAC filter <strong>blows dust, mold, and trapped chemicals back through every room</strong> in your home every time the heating or cooling turns on.',opts:[
+    {i:'🌡',n:'Never — or I\'m not sure',h:'Unknown status',r:'r',l:'Likely clogged and dirty'},
+    {i:'🌡',n:'Once a year',h:'Annual replacement',r:'y',l:'Changed too rarely'},
+    {i:'✅',n:'Every 3 months',h:'Standard recommended schedule',r:'s',l:'Good practice ✓'},
+    {i:'🌿',n:'Every 1–2 months with a quality filter',h:'High-efficiency MERV 11+ filter',r:'s',l:'Best filtration ✓'}
+  ]},
+  {id:'ventilation-a',title:'Do you <span class="g">open windows</span> to let fresh air in?',why:'A sealed home <strong>traps chemicals from furniture, cleaning products, and cooking</strong>. Even 15 minutes of open windows makes a significant difference.',opts:[
+    {i:'🏠',n:'Always closed — no fresh air',h:'Sealed home all year',r:'r',l:'Pollutants build up'},
+    {i:'🪟',n:'Occasionally — a few times a week',h:'Sometimes open',r:'y',l:'Some air exchange'},
+    {i:'✅',n:'Yes — at least 15 minutes every day',h:'Daily habit',r:'s',l:'Good air exchange ✓'},
+    {i:'🌿',n:'Daily fresh air plus a HEPA purifier',h:'Both ventilation and filtration',r:'s',l:'Best combination ✓'}
+  ]},
+  {id:'fresheners-a',title:'Do you use <span class="g">plug-in or spray air fresheners?</span>',why:'Plug-in and spray fresheners are <strong>the single biggest source of indoor VOCs</strong> in most homes — many run 24 hours a day without people realizing it.',opts:[
+    {i:'🌸',n:'Plug-in freshener — always on',h:'Febreze, Glade plug-ins',r:'r',l:'VOCs 24/7'},
+    {i:'💨',n:'Spray freshener — daily use',h:'Any room spray',r:'r',l:'VOC bursts daily'},
+    {i:'🌿',n:'Essential oil diffuser occasionally',h:'Ultrasonic diffuser, not aerosol',r:'y',l:'Verify pure oils'},
+    {i:'🚫',n:'No air fresheners at all',h:'Fragrance-free home',r:'s',l:'Best practice ✓'}
+  ]},
+  {id:'new-furniture-a',title:'Have you bought <span class="g">new furniture or carpet</span> in the last 2 years?',why:'New furniture, rugs, and carpet release <strong>formaldehyde and VOCs for up to 5 years</strong> after purchase — most people never connect the smell to a health risk.',opts:[
+    {i:'🪑',n:'Yes — new sofa, furniture, or carpet',h:'Major new purchases recently',r:'r',l:'Peak off-gassing now'},
+    {i:'🛋',n:'A few new things — 1–2 items',h:'A couple of new pieces',r:'y',l:'Some off-gassing'},
+    {i:'🪵',n:'Nothing new — everything is 3+ years old',h:'Established household',r:'s',l:'Low risk ✓'},
+    {i:'♻️',n:'Mostly vintage or solid wood furniture',h:'Second-hand or real wood',r:'s',l:'No formaldehyde ✓'}
+  ]},
+  {id:'lighting-a',title:'What <span class="g">kind of lights</span> do you use in the evenings?',why:'Cool white LED bulbs <strong>suppress melatonin and throw off your sleep cycle</strong> — most homes use the wrong light color after 6pm.',opts:[
+    {i:'💡',n:'Bright white lights on all evening',h:'Standard overhead LEDs',r:'r',l:'Blue light all night'},
+    {i:'💡',n:'Mix of bright and warm lights',h:'Different bulbs in different rooms',r:'y',l:'Partial blue exposure'},
+    {i:'🟡',n:'Warm bulbs — 2700K or lower',h:'Warm white throughout home',r:'s',l:'Melatonin-friendly ✓'},
+    {i:'🌙',n:'Dim warm lights after dinner — no screens',h:'Full wind-down routine',r:'s',l:'Best practice ✓'}
+  ]},
+  {id:'laundry-a',title:'Do you use <span class="g">scented laundry products?</span>',why:'Dryer sheets and scented fabric softener <strong>coat every single fiber of your clothes with fragrance chemicals</strong> — you then wear them directly on your skin all day.',opts:[
+    {i:'👕',n:'Scented detergent and dryer sheets',h:'Tide + Bounce together',r:'r',l:'Fragrance on skin all day'},
+    {i:'🌬',n:'Dryer sheets — even just sometimes',h:'Bounce, Downy dryer sheets',r:'y',l:'VOC coating on fabric'},
+    {i:'🌿',n:'Scented detergent only — no dryer sheets',h:'Fragranced liquid or pods',r:'y',l:'Fragrance on fabric'},
+    {i:'✅',n:'Fragrance-free — no dryer sheets',h:'Free & Clear, Seventh Generation',r:'s',l:'Clean clothes ✓'},
+    {i:'🌿',n:'Wool dryer balls — unscented',h:'Natural alternative to dryer sheets',r:'s',l:'No chemicals ✓'}
+  ]}
+]};
 
-// US: map ZIP prefix to state water data
-function getWaterDataUS(zip) {
-  const n = parseInt(zip.substring(0,3));
-  // Northeast
-  if(n>=100&&n<=149) return {...WATER_US['NY'], city:'New York, NY'};
-  if(n>=150&&n<=196) return {...WATER_US['PA'], city:'Pennsylvania'};
-  if(n>=10&&n<=27) return {...WATER_US['MA'], city:'Massachusetts'};
-  if(n>=28&&n<=29) return {...WATER_US['NJ'], city:'Rhode Island area'};
-  if(n>=60&&n<=69) return {...WATER_US['CT'], city:'Connecticut'};
-  if(n>=70&&n<=89) return {...WATER_US['NJ'], city:'New Jersey'};
-  if(n>=200&&n<=205) return {...WATER_US['DEFAULT'], city:'Washington DC'};
-  // South
-  if(n>=300&&n<=319) return {...WATER_US['GA'], city:'Georgia'};
-  if(n>=320&&n<=349) return {...WATER_US['FL'], city:'Florida'};
-  if(n>=270&&n<=289) return {...WATER_US['NC'], city:'North Carolina'};
-  if(n>=730&&n<=799) return {...WATER_US['TX'], city:'Texas'};
-  // Midwest
-  if(n>=600&&n<=629) return {...WATER_US['IL'], city:'Illinois'};
-  if(n>=480&&n<=499) return {...WATER_US['MI'], city:'Michigan'};
-  if(n>=430&&n<=458) return {...WATER_US['OH'], city:'Ohio'};
-  if(n>=550&&n<=567) return {...WATER_US['MN'], city:'Minnesota'};
-  // West
-  if(n>=900&&n<=961) return {...WATER_US['CA'], city:'California'};
-  if(n>=970&&n<=979) return {...WATER_US['OR'], city:'Oregon'};
-  if(n>=980&&n<=994) return {...WATER_US['WA'], city:'Washington State'};
-  if(n>=850&&n<=865) return {...WATER_US['AZ'], city:'Arizona'};
-  if(n>=800&&n<=816) return {...WATER_US['CO'], city:'Colorado'};
-  return WATER_US['DEFAULT'];
+const PROG={'s-welcome':0,'s-zip':12,'s-room':26,'s-pay':44,'s-email':56,'s-scan':70,'s-loading':86,'s-results':100,'s-deep-pick':100,'s-deep-pay':100,'s-deep-scan':100,'s-deep-loading':100,'s-deep-results':100};
+const LBLS={'s-welcome':'','s-zip':'Location','s-room':'Rooms','s-pay':'Payment','s-email':'Email','s-scan':'Scanning','s-loading':'Analyzing','s-results':'Results','s-deep-pick':'Deep Scan','s-deep-pay':'Deep Scan','s-deep-scan':'Deep Scanning','s-deep-loading':'Analyzing','s-deep-results':'Deep Results'};
+const ALL_ROOMS=['kitchen','bedroom','bathroom','air'];
+const ROOM_NAMES={kitchen:'Kitchen',bedroom:'Bedroom',bathroom:'Bathroom',air:'Air & Light'};
+const ROOM_ICONS={kitchen:'🍳',bedroom:'🛏',bathroom:'🚿',air:'💨'};
+let selRooms=[],bundleSel=false;
+function goTo(id,addH=true){if(S.screen===id)return;const from=document.getElementById(S.screen),to=document.getElementById(id);if(!to)return;if(addH)S.history.push(S.screen);from.classList.remove('on');from.classList.add('out');setTimeout(()=>from.classList.remove('out'),350);to.classList.add('on');S.screen=id;document.getElementById('prog').style.width=(PROG[id]||0)+'%';document.getElementById('navLbl').textContent=LBLS[id]||'';document.getElementById('navBack').classList.toggle('on',!['s-welcome','s-loading','s-deep-loading','s-results'].includes(id));to.scrollTop=0;if(id==='s-pay')setTimeout(mountStripe,100);if(id==='s-deep-pay')setTimeout(mountDeepStripe,100);}
+function goBack(){if(!S.history.length)return;const prev=S.history.pop(),from=document.getElementById(S.screen),to=document.getElementById(prev);if(!to)return;from.classList.remove('on');to.classList.add('on');S.screen=prev;document.getElementById('prog').style.width=(PROG[prev]||0)+'%';document.getElementById('navLbl').textContent=LBLS[prev]||'';document.getElementById('navBack').classList.toggle('on',!['s-welcome','s-loading','s-deep-loading','s-results'].includes(prev));}
+// ── COUNTRY SELECTION ──
+// ── ALL COUNTRIES ──
+// Water-data countries: us, ca, gb, au, de, nl, fr, jp, nz, ie, at, ch, be, se, no, dk, fi
+const ALL_COUNTRIES = [
+  {code:'us',name:'United States',flag:'🇺🇸',fmt:'5-digit ZIP',ph:'78701',maxlen:5,validate:v=>/^\d{5}$/.test(v),inputmode:'numeric',water:true},
+  {code:'ca',name:'Canada',flag:'🇨🇦',fmt:'Postal code',ph:'M5V 3A8',maxlen:7,validate:v=>/^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/.test(v.trim()),inputmode:'text',water:true},
+  {code:'gb',name:'United Kingdom',flag:'🇬🇧',fmt:'Postcode',ph:'SW1A 1AA',maxlen:8,validate:v=>/^[A-Za-z]{1,2}\d[A-Za-z\d]?[ ]?\d[A-Za-z]{2}$/.test(v.trim()),inputmode:'text',water:true},
+  {code:'au',name:'Australia',flag:'🇦🇺',fmt:'4-digit postcode',ph:'2000',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'de',name:'Germany',flag:'🇩🇪',fmt:'5-digit PLZ',ph:'80331',maxlen:5,validate:v=>/^\d{5}$/.test(v),inputmode:'numeric',water:true},
+  {code:'nl',name:'Netherlands',flag:'🇳🇱',fmt:'Postcode',ph:'1011 AB',maxlen:7,validate:v=>/^\d{4}[ ]?[A-Za-z]{2}$/.test(v.trim()),inputmode:'text',water:true},
+  {code:'fr',name:'France',flag:'🇫🇷',fmt:'5-digit code postal',ph:'75001',maxlen:5,validate:v=>/^\d{5}$/.test(v),inputmode:'numeric',water:true},
+  {code:'jp',name:'Japan',flag:'🇯🇵',fmt:'7-digit postal code',ph:'1000001',maxlen:8,validate:v=>/^\d{3}-?\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'nz',name:'New Zealand',flag:'🇳🇿',fmt:'4-digit postcode',ph:'1010',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'ie',name:'Ireland',flag:'🇮🇪',fmt:'Eircode',ph:'D01 F5P2',maxlen:8,validate:v=>v.trim().length>=4,inputmode:'text',water:true},
+  {code:'at',name:'Austria',flag:'🇦🇹',fmt:'4-digit PLZ',ph:'1010',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'ch',name:'Switzerland',flag:'🇨🇭',fmt:'4-digit PLZ',ph:'8001',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'be',name:'Belgium',flag:'🇧🇪',fmt:'4-digit postcode',ph:'1000',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'se',name:'Sweden',flag:'🇸🇪',fmt:'5-digit postnummer',ph:'11120',maxlen:6,validate:v=>/^\d{3}[ ]?\d{2}$/.test(v),inputmode:'numeric',water:true},
+  {code:'no',name:'Norway',flag:'🇳🇴',fmt:'4-digit postnummer',ph:'0150',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'dk',name:'Denmark',flag:'🇩🇰',fmt:'4-digit postnummer',ph:'1050',maxlen:4,validate:v=>/^\d{4}$/.test(v),inputmode:'numeric',water:true},
+  {code:'fi',name:'Finland',flag:'🇫🇮',fmt:'5-digit postinumero',ph:'00100',maxlen:5,validate:v=>/^\d{5}$/.test(v),inputmode:'numeric',water:true},
+  // No water data — postcode still collected for city context
+  {code:'af',name:'Afghanistan',flag:'🇦🇫',fmt:'Postcode (optional)',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'al',name:'Albania',flag:'🇦🇱',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'dz',name:'Algeria',flag:'🇩🇿',fmt:'Code postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ar',name:'Argentina',flag:'🇦🇷',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'am',name:'Armenia',flag:'🇦🇲',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'az',name:'Azerbaijan',flag:'🇦🇿',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'bh',name:'Bahrain',flag:'🇧🇭',fmt:'Postcode (optional)',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'bd',name:'Bangladesh',flag:'🇧🇩',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'by',name:'Belarus',flag:'🇧🇾',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'bz',name:'Belize',flag:'🇧🇿',fmt:'No postcode',ph:'N/A',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'bo',name:'Bolivia',flag:'🇧🇴',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ba',name:'Bosnia & Herzegovina',flag:'🇧🇦',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'br',name:'Brazil',flag:'🇧🇷',fmt:'CEP',ph:'01310-100',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'bn',name:'Brunei',flag:'🇧🇳',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'bg',name:'Bulgaria',flag:'🇧🇬',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'kh',name:'Cambodia',flag:'🇰🇭',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'cm',name:'Cameroon',flag:'🇨🇲',fmt:'No postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'cl',name:'Chile',flag:'🇨🇱',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'cn',name:'China',flag:'🇨🇳',fmt:'6-digit postal code',ph:'100000',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'co',name:'Colombia',flag:'🇨🇴',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'cr',name:'Costa Rica',flag:'🇨🇷',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'hr',name:'Croatia',flag:'🇭🇷',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'cy',name:'Cyprus',flag:'🇨🇾',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'cz',name:'Czech Republic',flag:'🇨🇿',fmt:'PSČ',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'eg',name:'Egypt',flag:'🇪🇬',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ee',name:'Estonia',flag:'🇪🇪',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'et',name:'Ethiopia',flag:'🇪🇹',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ge',name:'Georgia',flag:'🇬🇪',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'gh',name:'Ghana',flag:'🇬🇭',fmt:'No postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'gr',name:'Greece',flag:'🇬🇷',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'gt',name:'Guatemala',flag:'🇬🇹',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'hk',name:'Hong Kong',flag:'🇭🇰',fmt:'No postcode',ph:'N/A',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'hu',name:'Hungary',flag:'🇭🇺',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'in',name:'India',flag:'🇮🇳',fmt:'PIN code',ph:'110001',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'id',name:'Indonesia',flag:'🇮🇩',fmt:'Kode pos',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ir',name:'Iran',flag:'🇮🇷',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'iq',name:'Iraq',flag:'🇮🇶',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'il',name:'Israel',flag:'🇮🇱',fmt:'Mיקוד',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'it',name:'Italy',flag:'🇮🇹',fmt:'CAP',ph:'00100',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'jm',name:'Jamaica',flag:'🇯🇲',fmt:'No postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'jo',name:'Jordan',flag:'🇯🇴',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'kz',name:'Kazakhstan',flag:'🇰🇿',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ke',name:'Kenya',flag:'🇰🇪',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'kw',name:'Kuwait',flag:'🇰🇼',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'kg',name:'Kyrgyzstan',flag:'🇰🇬',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'la',name:'Laos',flag:'🇱🇦',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'lv',name:'Latvia',flag:'🇱🇻',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'lb',name:'Lebanon',flag:'🇱🇧',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ly',name:'Libya',flag:'🇱🇾',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'lt',name:'Lithuania',flag:'🇱🇹',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'lu',name:'Luxembourg',flag:'🇱🇺',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'mo',name:'Macau',flag:'🇲🇴',fmt:'No postcode',ph:'N/A',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'my',name:'Malaysia',flag:'🇲🇾',fmt:'Postcode',ph:'50000',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'mv',name:'Maldives',flag:'🇲🇻',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'mt',name:'Malta',flag:'🇲🇹',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'mx',name:'Mexico',flag:'🇲🇽',fmt:'Código postal',ph:'06600',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'md',name:'Moldova',flag:'🇲🇩',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'mn',name:'Mongolia',flag:'🇲🇳',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'me',name:'Montenegro',flag:'🇲🇪',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ma',name:'Morocco',flag:'🇲🇦',fmt:'Code postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'mm',name:'Myanmar',flag:'🇲🇲',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'np',name:'Nepal',flag:'🇳🇵',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ng',name:'Nigeria',flag:'🇳🇬',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'mk',name:'North Macedonia',flag:'🇲🇰',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'om',name:'Oman',flag:'🇴🇲',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'pk',name:'Pakistan',flag:'🇵🇰',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'pa',name:'Panama',flag:'🇵🇦',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'py',name:'Paraguay',flag:'🇵🇾',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'pe',name:'Peru',flag:'🇵🇪',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ph',name:'Philippines',flag:'🇵🇭',fmt:'ZIP code',ph:'1000',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'pl',name:'Poland',flag:'🇵🇱',fmt:'Kod pocztowy',ph:'00-001',maxlen:6,validate:v=>true,inputmode:'text',water:false},
+  {code:'pt',name:'Portugal',flag:'🇵🇹',fmt:'Código postal',ph:'1000-001',maxlen:9,validate:v=>true,inputmode:'text',water:false},
+  {code:'qa',name:'Qatar',flag:'🇶🇦',fmt:'No postcode',ph:'N/A',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ro',name:'Romania',flag:'🇷🇴',fmt:'Cod poștal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ru',name:'Russia',flag:'🇷🇺',fmt:'Postcode',ph:'101000',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'sa',name:'Saudi Arabia',flag:'🇸🇦',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'rs',name:'Serbia',flag:'🇷🇸',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'sg',name:'Singapore',flag:'🇸🇬',fmt:'6-digit postal code',ph:'018989',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'sk',name:'Slovakia',flag:'🇸🇰',fmt:'PSČ',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'si',name:'Slovenia',flag:'🇸🇮',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'za',name:'South Africa',flag:'🇿🇦',fmt:'4-digit postcode',ph:'2000',maxlen:4,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'kr',name:'South Korea',flag:'🇰🇷',fmt:'5-digit postcode',ph:'03000',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'es',name:'Spain',flag:'🇪🇸',fmt:'Código postal',ph:'28001',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'lk',name:'Sri Lanka',flag:'🇱🇰',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'sd',name:'Sudan',flag:'🇸🇩',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'tw',name:'Taiwan',flag:'🇹🇼',fmt:'Postcode',ph:'100',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'tj',name:'Tajikistan',flag:'🇹🇯',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'tz',name:'Tanzania',flag:'🇹🇿',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'th',name:'Thailand',flag:'🇹🇭',fmt:'5-digit postcode',ph:'10110',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'tn',name:'Tunisia',flag:'🇹🇳',fmt:'Code postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'tr',name:'Turkey',flag:'🇹🇷',fmt:'5-digit postcode',ph:'34000',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'tm',name:'Turkmenistan',flag:'🇹🇲',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ug',name:'Uganda',flag:'🇺🇬',fmt:'No postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ua',name:'Ukraine',flag:'🇺🇦',fmt:'Postcode',ph:'01001',maxlen:5,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'ae',name:'United Arab Emirates',flag:'🇦🇪',fmt:'No postcode',ph:'N/A',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'uy',name:'Uruguay',flag:'🇺🇾',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'uz',name:'Uzbekistan',flag:'🇺🇿',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'ve',name:'Venezuela',flag:'🇻🇪',fmt:'Código postal',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'vn',name:'Vietnam',flag:'🇻🇳',fmt:'Postcode',ph:'700000',maxlen:6,validate:v=>true,inputmode:'numeric',water:false},
+  {code:'ye',name:'Yemen',flag:'🇾🇪',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'zm',name:'Zambia',flag:'🇿🇲',fmt:'Postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false},
+  {code:'zw',name:'Zimbabwe',flag:'🇿🇼',fmt:'No postcode',ph:'',maxlen:10,validate:v=>true,inputmode:'text',water:false}
+];
+
+let selectedCountry = '';
+let filteredCountries = [...ALL_COUNTRIES];
+
+function renderCountryList(list){
+  const el = document.getElementById('countryList');
+  if(!el) return;
+  if(list.length === 0){
+    el.innerHTML = '<div style="padding:14px;text-align:center;font-size:13px;color:var(--t4)">No countries found</div>';
+    return;
+  }
+  el.innerHTML = list.map(co => {
+    const sel = selectedCountry === co.code ? ' sel' : '';
+    const waterBadge = co.water
+      ? '<span class="ci-badge water">💧 Water data</span>'
+      : '<span class="ci-badge nowater">No water data</span>';
+    return '<div class="country-item' + sel + '" onclick="selectCountry(\'' + co.code + '\')">'
+      + '<div class="ci-flag">' + co.flag + '</div>'
+      + '<div class="ci-info"><div class="ci-name">' + co.name + '</div>'
+      + (co.fmt ? '<div class="ci-fmt">' + co.fmt + (co.ph ? ' · e.g. ' + co.ph : '') + '</div>' : '')
+      + '</div>' + waterBadge + '</div>';
+  }).join('');
 }
 
-const WATER_COUNTRY = {
-  ca: {
-    'V': {city:'🇨🇦 British Columbia (Vancouver)',items:[{n:'Trihalomethanes',d:'Metro Vancouver chlorinated supply — THMs elevated above Health Canada aesthetic guidelines.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 Vancouver homes may have lead solder — especially Downtown Eastside.',c:'r',s:'Risk in older homes'},{n:'Microplastics',d:'Detected in Greater Vancouver tap water — emerging concern.',c:'y',s:'Emerging'}]},
-    'T': {city:'🇨🇦 Alberta (Calgary/Edmonton)',items:[{n:'Nitrates',d:'Agricultural runoff elevated in southern Alberta irrigation districts.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Bow River chlorination byproducts in Calgary supply.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 older housing in Edmonton and Calgary.',c:'y',s:'Risk in older homes'}]},
-    'S': {city:'🇨🇦 Saskatchewan',items:[{n:'Nitrates',d:'Saskatchewan has highest agricultural nitrate contamination in Canada — 40% of wells above guideline.',c:'r',s:'Critical in rural areas'},{n:'Uranium',d:'Naturally elevated in Saskatchewan Prairie groundwater.',c:'y',s:'Monitored'},{n:'Arsenic',d:'Naturally occurring in some SK wells above Health Canada guideline.',c:'y',s:'Monitored'}]},
-    'R': {city:'🇨🇦 Manitoba (Winnipeg)',items:[{n:'Trihalomethanes',d:'Red River source water — high organic content produces elevated THMs after chlorination.',c:'r',s:'Above guideline'},{n:'Nitrates',d:'Manitoba farm runoff elevated in rural areas.',c:'y',s:'Elevated'},{n:'Algal toxins',d:'Lake Winnipeg algal blooms — microcystin risk in summer.',c:'y',s:'Seasonal risk'}]},
-    'M': {city:'🇨🇦 Ontario (Toronto)',items:[{n:'Lead',d:'Toronto has 60,000+ lead service lines still active — aggressive replacement ongoing.',c:'r',s:'Critical'},{n:'PFAS compounds',d:'Detected in multiple Ontario source waters above Health Canada guidance.',c:'r',s:'Detected'},{n:'Trihalomethanes',d:'Lake Ontario chlorination byproducts.',c:'y',s:'Elevated'}]},
-    'K': {city:'🇨🇦 Ontario (Ottawa)',items:[{n:'Lead',d:'Ottawa older neighborhoods with pre-1950 lead service lines.',c:'r',s:'Risk in older areas'},{n:'PFAS compounds',d:'Detected in Ottawa River tributaries.',c:'y',s:'Monitored'},{n:'Trihalomethanes',d:'Ottawa River source water chlorination byproducts.',c:'y',s:'Elevated'}]},
-    'H': {city:'🇨🇦 Quebec (Montreal)',items:[{n:'Lead',d:'Montreal has oldest housing stock in Canada — thousands of pre-1970 lead pipes.',c:'r',s:'Critical'},{n:'Trihalomethanes',d:'St. Lawrence River chlorination produces elevated THMs.',c:'r',s:'Above guideline'},{n:'Chloramines',d:'Montreal uses chloramination — harder to filter than chlorine.',c:'y',s:'Detected'}]},
-    'G': {city:'🇨🇦 Quebec (Quebec City)',items:[{n:'Lead',d:'Old Quebec City buildings with lead pipes — historic district at highest risk.',c:'r',s:'Risk in Vieux-Québec'},{n:'Trihalomethanes',d:'St. Lawrence chlorination byproducts.',c:'y',s:'Elevated'},{n:'Microplastics',d:'Detected in Quebec City tap water.',c:'y',s:'Emerging'}]},
-    'DEFAULT': {city:'🇨🇦 Canada',items:[{n:'Chloramines',d:'Standard disinfectant in Canadian municipal systems.',c:'y',s:'Detected'},{n:'Trihalomethanes',d:'Disinfection byproduct in municipal supply.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 homes may have lead solder.',c:'r',s:'Risk in older homes'}]},
-  },
-  gb: {
-    'London': {city:'🇬🇧 London',items:[{n:'Lead',d:'London has the highest density of Victorian-era lead pipes in the UK — 1M+ affected properties.',c:'r',s:'Critical in pre-1970 homes'},{n:'Chlorine',d:'Thames Water uses elevated chlorine — above WHO taste guideline.',c:'y',s:'Detectable'},{n:'Nitrates',d:'Thames catchment agricultural runoff — elevated in dry seasons.',c:'y',s:'Seasonal elevation'}]},
-    'M': {city:'🇬🇧 Manchester',items:[{n:'Lead',d:'Manchester Victorian housing with lead pipes — Salford and Oldham at highest risk.',c:'r',s:'Risk in pre-1970 homes'},{n:'Trihalomethanes',d:'Chlorination of Pennine reservoir water.',c:'y',s:'Elevated'},{n:'Aluminium',d:'Used as flocculant in NW treatment — trace residuals.',c:'y',s:'Trace levels'}]},
-    'B': {city:'🇬🇧 Birmingham',items:[{n:'Lead',d:'Birmingham has extensive Victorian lead pipe network.',c:'r',s:'Risk in pre-1970 homes'},{n:'Nitrates',d:'Agricultural runoff in Severn catchment.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Chlorination byproducts in Severn Trent supply.',c:'y',s:'Elevated'}]},
-    'EH': {city:'🇬🇧 Edinburgh',items:[{n:'Lead',d:'Edinburgh has Scotland\'s oldest Victorian lead pipe network — Leith and Southside at risk.',c:'r',s:'Risk in pre-1970 tenements'},{n:'Trihalomethanes',d:'Loch Katrine source water chlorination byproducts.',c:'y',s:'Low-moderate'},{n:'Aluminium',d:'Scottish Water treatment residuals.',c:'y',s:'Trace levels'}]},
-    'G': {city:'🇬🇧 Glasgow',items:[{n:'Lead',d:'Glasgow has highest lead pipe concentration in Scotland.',c:'r',s:'Critical in tenements'},{n:'Trihalomethanes',d:'Loch Lomond source water — chlorination byproducts.',c:'y',s:'Elevated'},{n:'Aluminium',d:'Treatment residuals in Scottish supply.',c:'y',s:'Trace levels'}]},
-    'DEFAULT': {city:'🇬🇧 United Kingdom',items:[{n:'Lead',d:'Pre-1970 properties may still have lead pipes.',c:'r',s:'Risk in older properties'},{n:'Trihalomethanes',d:'Chlorination byproducts in municipal supply.',c:'y',s:'Elevated'},{n:'Nitrates',d:'Agricultural runoff elevated in rural England.',c:'y',s:'Elevated in rural areas'}]},
-  },
-  au: {
-    '2': {city:'🇦🇺 New South Wales (Sydney)',items:[{n:'Chloramines',d:'Sydney uses chloramination — produces different byproducts than chlorine, harder to filter.',c:'y',s:'Detected'},{n:'Fluoride',d:'Added at 1.0 mg/L in Sydney — approaching upper optimal limit.',c:'y',s:'Added'},{n:'PFAS compounds',d:'Detected near RAAF Williamtown and Richmond — residents on alternative supply.',c:'r',s:'Critical near bases'}]},
-    '3': {city:'🇦🇺 Victoria (Melbourne)',items:[{n:'Trihalomethanes',d:'Yarra River catchment — seasonal organic matter elevates chlorination byproducts.',c:'y',s:'Seasonal elevation'},{n:'Aluminium',d:'Treatment residuals in Melbourne supply.',c:'y',s:'Trace levels'},{n:'PFAS compounds',d:'Detected near East Sale RAAF base and Fiskville training facility.',c:'r',s:'Detected'}]},
-    '4': {city:'🇦🇺 Queensland (Brisbane)',items:[{n:'Trihalomethanes',d:'Warm climate accelerates THM formation in SEQ supply.',c:'r',s:'Elevated'},{n:'PFAS compounds',d:'Detected near Oakey Army Aviation Centre — class action settled.',c:'r',s:'Critical near Oakey'},{n:'Fluoride',d:'Added at 1.0 mg/L across Queensland.',c:'y',s:'Added'}]},
-    '5': {city:'🇦🇺 South Australia (Adelaide)',items:[{n:'Trihalomethanes',d:'Murray River source water — highest THM levels in Australia.',c:'r',s:'Above NHMRC guideline'},{n:'Salinity',d:'Murray River salinity elevated — affects taste and sodium intake.',c:'y',s:'Elevated'},{n:'Fluoride',d:'Added at 1.0 mg/L in Adelaide.',c:'y',s:'Added'}]},
-    '6': {city:'🇦🇺 Western Australia (Perth)',items:[{n:'PFAS compounds',d:'Detected near RAAF Pearce and Gingin — above NHMRC health guidance.',c:'r',s:'Above health guidance near bases'},{n:'Nitrates',d:'Perth groundwater nitrate elevated from septic and agricultural sources.',c:'y',s:'Elevated'},{n:'Chloramines',d:'Perth Water uses chloramination.',c:'y',s:'Detected'}]},
-    'DEFAULT': {city:'🇦🇺 Australia',items:[{n:'Chlorine & chloramines',d:'Standard disinfection across Australian states.',c:'y',s:'Detected'},{n:'Fluoride',d:'Added at 0.6–1.0 mg/L in most states.',c:'y',s:'Added'},{n:'PFAS compounds',d:'Detected near military bases across Australia.',c:'r',s:'Monitored'}]},
-  },
-};
-
-function getWaterDataCountry(zip, country) {
-  const z = zip.replace(/\s/g,'').toUpperCase();
-  if(country === 'ca') {
-    const key = z.charAt(0);
-    return WATER_COUNTRY.ca[key] || WATER_COUNTRY.ca['DEFAULT'];
-  }
-  if(country === 'gb') {
-    const prefixes = ['EH','G','M','B'];
-    for(const p of prefixes){ if(z.startsWith(p)) return WATER_COUNTRY.gb[p]; }
-    if(['E','EC','N','NW','SE','SW','W','WC'].some(p=>z.startsWith(p))) return WATER_COUNTRY.gb['London'];
-    return WATER_COUNTRY.gb['DEFAULT'];
-  }
-  if(country === 'au') {
-    const key = z.charAt(0);
-    return WATER_COUNTRY.au[key] || WATER_COUNTRY.au['DEFAULT'];
-  }
-  return null;
+function filterCountries(q){
+  const query = q.toLowerCase().trim();
+  filteredCountries = query
+    ? ALL_COUNTRIES.filter(co => co.name.toLowerCase().includes(query))
+    : [...ALL_COUNTRIES];
+  renderCountryList(filteredCountries);
 }
 
+// Init country list on page load
+setTimeout(()=>renderCountryList(ALL_COUNTRIES), 100);
+
+function selectCountry(code){
+  const co = ALL_COUNTRIES.find(c => c.code === code);
+  if(!co) return;
+  selectedCountry = code;
+  S.country = code;
+
+  // Hide search list, show selected
+  document.getElementById('countrySearch').value = '';
+  renderCountryList(ALL_COUNTRIES);
+  const listWrap = document.querySelector('.country-select-wrap');
+  if(listWrap) listWrap.style.display = 'none';
+  const selShow = document.getElementById('countrySelectedShow');
+  if(selShow){
+    selShow.classList.add('on');
+    document.getElementById('csFlag').textContent = co.flag;
+    document.getElementById('csName').textContent = co.name;
+  }
+
+  // Water data or no-water notice
+  const noWater = document.getElementById('noWaterNotice');
+  const zipWrap = document.getElementById('zipFieldWrap');
+  const waterReveal = document.getElementById('waterReveal');
+
+  if(co.water){
+    if(noWater) noWater.classList.remove('on');
+    // Show postcode input
+    if(zipWrap){
+      zipWrap.classList.add('on');
+      const inp = document.getElementById('zipInp');
+      if(inp){
+        inp.placeholder = co.ph ? co.fmt + ' (e.g. ' + co.ph + ')' : co.fmt || 'Enter postcode';
+        inp.maxLength = co.maxlen || 10;
+        inp.inputMode = co.inputmode || 'text';
+        inp.value = '';
+      }
+      const hint = document.getElementById('zipHint');
+      if(hint) hint.textContent = 'We pull water contamination data for your area';
+    }
+    if(waterReveal) waterReveal.style.display = 'none';
+  } else {
+    // No water data — skip directly to rooms after brief notice
+    if(noWater) noWater.classList.add('on');
+    if(zipWrap) zipWrap.classList.remove('on');
+    if(waterReveal) waterReveal.style.display = 'none';
+    // Set city name and auto-continue after short delay
+    S.city = co.flag + ' ' + co.name;
+    S.zip = 'N/A';
+    setTimeout(()=>{
+      goTo('s-room');
+    }, 2200);
+  }
+}
+
+function changeCountry(){
+  selectedCountry = '';
+  S.country = '';
+  const selShow = document.getElementById('countrySelectedShow');
+  if(selShow) selShow.classList.remove('on');
+  const listWrap = document.querySelector('.country-select-wrap');
+  if(listWrap) listWrap.style.display = 'block';
+  const noWater = document.getElementById('noWaterNotice');
+  if(noWater) noWater.classList.remove('on');
+  const zipWrap = document.getElementById('zipFieldWrap');
+  if(zipWrap) zipWrap.classList.remove('on');
+  document.getElementById('waterReveal').style.display = 'none';
+  document.getElementById('countrySearch').focus();
+}
+
+document.getElementById('zipInp').addEventListener('input',function(){
+  if(!selectedCountry) return;
+  const co = ALL_COUNTRIES.find(c => c.code === selectedCountry);
+  const v = this.value.trim();
+  if(co && co.validate && co.validate(v)) lookupZip(v, selectedCountry);
+  else document.getElementById('waterReveal').style.display='none';
+});
+
+// Country-specific water defaults
+const WATER_COUNTRY_DEF = {
+  ca:{items:[{n:'Chloramines',d:'Standard disinfectant in Canadian municipal systems. Harder to filter than chlorine.',c:'y',s:'Detected'},{n:'Trihalomethanes',d:'Disinfection byproduct regulated under Health Canada guidelines.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 homes may have lead solder and service lines.',c:'r',s:'Risk in older homes'}]},
+  gb:{items:[{n:'Chlorine',d:'Used widely in UK water treatment. Reacts with organic matter to form byproducts.',c:'y',s:'Detectable'},{n:'Lead',d:'Pre-1970 properties may still have lead pipes — especially in England.',c:'r',s:'Older property risk'},{n:'Nitrates',d:'Agricultural runoff elevated in rural areas of England and Wales.',c:'y',s:'Elevated in rural areas'}]},
+  au:{items:[{n:'Chlorine & chloramines',d:'Standard disinfection across all Australian states.',c:'y',s:'Detected'},{n:'Fluoride',d:'Added at 0.6–1.0 mg/L in most Australian states.',c:'y',s:'Added'},{n:'Aluminium',d:'Used as flocculant in water treatment. Trace residual amounts.',c:'y',s:'Trace levels'}]},
+  de:{items:[{n:'Nitrate',d:'Elevated in Bavaria, Baden-Württemberg, and NRW farming regions. EU limit 50 mg/L — exceeded in 28% of monitoring sites.',c:'y',s:'Region-dependent'},{n:'Pesticide residues',d:'Glyphosate and atrazine metabolites detected in agricultural regions of Bavaria and Thuringia.',c:'y',s:'Low-moderate'},{n:'Lead',d:'Pre-1973 buildings (Altbau) may have lead solder or lead service pipes — common in Berlin, Hamburg, Munich.',c:'r',s:'Risk in Altbau'}]},
+  nl:{items:[{n:'Nitrates',d:'High agricultural intensity — detectable in groundwater-fed regions.',c:'y',s:'Elevated in east NL'},{n:'PFAS compounds',d:'Detected in several systems, particularly near industrial zones.',c:'r',s:'Above EU guideline'},{n:'Chlorine byproducts',d:'Standard disinfection byproducts in municipal supply.',c:'y',s:'Detectable'}]},
+  fr:{items:[{n:'Pesticides',d:'France has intensive agriculture — atrazine detected in many water systems.',c:'y',s:'Detected'},{n:'Nitrates',d:'Agricultural runoff elevated especially in Brittany and Loire regions.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1948 buildings may have lead pipes.',c:'r',s:'Risk in old buildings'}]},
+  jp:{items:[{n:'Trihalomethanes',d:'Chlorination byproducts present in municipal supply.',c:'y',s:'Low-level detected'},{n:'Radon',d:'Elevated in areas with granite geology.',c:'y',s:'Some regions elevated'},{n:'Arsenic',d:'Natural geological arsenic in some rural groundwater sources.',c:'r',s:'Monitored'}]},
+  nz:{items:[{n:'E. coli incidents',d:'Rural water supplies have higher contamination rates.',c:'y',s:'Rural risk'},{n:'Nitrates',d:'Agricultural runoff elevated in Canterbury and Waikato.',c:'y',s:'Elevated in farming regions'},{n:'Protozoa',d:'Giardia and Cryptosporidium detected in some untreated sources.',c:'r',s:'Monitored'}]},
+  ie:{items:[{n:'Trihalomethanes',d:'Ireland has some of the highest THM levels in the EU.',c:'r',s:'Above EU guideline'},{n:'Lead',d:'Pre-1980 homes in Dublin and cities may have lead pipes.',c:'r',s:'Urban risk'},{n:'Pesticides',d:'Some rural water schemes flagged for pesticide presence.',c:'y',s:'Monitored'}]},
+  at:{items:[{n:'Nitrates',d:'Agricultural runoff in eastern regions.',c:'y',s:'Monitored'},{n:'Chlorination byproducts',d:'Standard disinfection residuals.',c:'y',s:'Low levels'},{n:'Radon',d:'Elevated in Alpine granite geology zones.',c:'y',s:'Some areas'}]},
+  ch:{items:[{n:'Pesticides',d:'Traces of chlorothalonil metabolites detected post-2020 ban.',c:'y',s:'Monitored'},{n:'Nitrates',d:'Agricultural pressure in the Mittelland.',c:'y',s:'Some regions elevated'},{n:'Microplastics',d:'Detected in Alpine freshwater sources.',c:'y',s:'Emerging concern'}]},
+  be:{items:[{n:'Nitrates',d:'Belgium has intensive agriculture — nitrates elevated in Flemish region.',c:'r',s:'Above EU limit in some areas'},{n:'Pesticides',d:'Glyphosate and MCPA traces in groundwater.',c:'y',s:'Detected'},{n:'PFAS',d:'Industrial PFAS contamination around Antwerp and Ghent.',c:'r',s:'Above guideline'}]},
+  se:{items:[{n:'Radon',d:'Sweden has elevated radon in groundwater due to bedrock geology.',c:'r',s:'Above WHO guideline'},{n:'Arsenic',d:'Naturally elevated in some rural groundwater wells.',c:'y',s:'Some wells elevated'},{n:'Microplastics',d:'Detected in treated drinking water.',c:'y',s:'Emerging concern'}]},
+  no:{items:[{n:'Radon',d:'Norway has naturally elevated radon levels in granite bedrock areas.',c:'r',s:'Above WHO guideline'},{n:'Trihalomethanes',d:'Chlorination byproducts in municipal supply.',c:'y',s:'Low levels'},{n:'NOM (organic matter)',d:'High natural organic matter in Norwegian surface water.',c:'y',s:'Manageable'}]},
+  dk:{items:[{n:'Pesticides',d:'Denmark has intensive agriculture — pesticide traces detected in groundwater.',c:'r',s:'Above limit in some areas'},{n:'Nitrates',d:'Agricultural runoff elevated especially in Jutland.',c:'y',s:'Elevated'},{n:'PFAS',d:'Firefighting foam contamination around airports and military sites.',c:'r',s:'Some areas above limit'}]},
+  fi:{items:[{n:'Radon',d:'Finland has naturally elevated radon in granite-based groundwater.',c:'r',s:'Above WHO guideline in some wells'},{n:'Arsenic',d:'Naturally occurring in some Finnish groundwater.',c:'y',s:'Monitored'},{n:'Fluoride',d:'Naturally elevated fluoride in some groundwater areas.',c:'y',s:'Some areas'}]}
+};
 
 
 // Regional postcode → city + specific water data
@@ -847,6 +1222,70 @@ function getWaterDataDE(zip) {
   if(prefix <= 89) return WATER_DE['88-89'];
   if(prefix <= 96) return WATER_DE['90-96'];
   return WATER_DE['97-99'];
+}
+
+
+const WATER_US_STATE = {
+  'NY':{city:'New York, NY',items:[{n:'Lead',d:'NYC has 400,000+ lead service lines still active. No safe level exists.',c:'r',s:'Critical'},{n:'Chromium-6',d:'IARC carcinogen detected above EWG guidelines in NYC supply.',c:'r',s:'Above guideline'},{n:'Trihalomethanes',d:'Chlorination byproduct of Hudson River source water.',c:'y',s:'Elevated'}]},
+  'NJ':{city:'New Jersey',items:[{n:'PFAS compounds',d:'NJ strictest PFAS limits in US — multiple water systems above state limit.',c:'r',s:'Above limit'},{n:'Lead',d:'Older Newark and Trenton housing with lead service lines.',c:'r',s:'Elevated'},{n:'Trihalomethanes',d:'Chlorination byproducts above EWG guidelines.',c:'y',s:'Elevated'}]},
+  'PA':{city:'Pennsylvania',items:[{n:'Lead',d:'Philadelphia has 30,000+ lead service lines still active.',c:'r',s:'Critical in Philadelphia'},{n:'Atrazine',d:'Agricultural herbicide in PA groundwater.',c:'y',s:'Detected'},{n:'Trihalomethanes',d:'Chlorination byproducts elevated in Philadelphia.',c:'y',s:'Elevated'}]},
+  'MA':{city:'Massachusetts',items:[{n:'PFAS compounds',d:'MA widespread PFAS from firefighting foam — Hyannis above state limit.',c:'r',s:'Above limit'},{n:'Trihalomethanes',d:'Chlorination byproducts elevated in Boston area.',c:'y',s:'Elevated'},{n:'Radium',d:'Elevated in some western MA groundwater.',c:'y',s:'Monitored'}]},
+  'IL':{city:'Illinois',items:[{n:'Lead',d:'Chicago has most lead service lines in US — 400,000+ still active.',c:'r',s:'Critical'},{n:'PFAS compounds',d:'Detected above EPA 2024 limit in multiple IL utilities.',c:'r',s:'Above EPA limit'},{n:'Nitrates',d:'Agricultural runoff elevated in downstate Illinois.',c:'y',s:'Elevated'}]},
+  'MI':{city:'Michigan',items:[{n:'Lead',d:'Flint crisis exposed systemic failures — Detroit still replacing lead lines.',c:'r',s:'Critical legacy risk'},{n:'PFAS compounds',d:'MI has most PFAS-contaminated sites in US.',c:'r',s:'Above EPA limit'},{n:'Nitrates',d:'Agricultural runoff in western Michigan.',c:'y',s:'Elevated'}]},
+  'OH':{city:'Ohio',items:[{n:'Nitrates',d:'Lake Erie algal blooms triggered Toledo water shutdowns.',c:'r',s:'Algal toxin risk'},{n:'PFAS compounds',d:'Detected near military bases and industrial sites.',c:'r',s:'Above EPA limit'},{n:'Lead',d:'Cleveland and Columbus older lead infrastructure.',c:'y',s:'Risk in older areas'}]},
+  'MN':{city:'Minnesota',items:[{n:'PFAS compounds',d:'3M manufacturing legacy — East Metro MN has highest PFAS in US.',c:'r',s:'Critical in East Metro'},{n:'Nitrates',d:'Agricultural runoff elevated in southern MN.',c:'y',s:'Elevated'},{n:'Arsenic',d:'Naturally elevated in some MN groundwater.',c:'y',s:'Monitored'}]},
+  'TX':{city:'Texas',items:[{n:'PFAS compounds',d:'Detected in Austin, San Antonio, Houston above EPA 2024 limits.',c:'r',s:'Above EPA limit'},{n:'Haloacetic acids',d:'Disinfection byproduct linked to bladder effects.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Chlorination byproduct above EWG health guidelines.',c:'y',s:'Elevated'}]},
+  'FL':{city:'Florida',items:[{n:'PFAS compounds',d:'Widespread from military bases — Pensacola area critical.',c:'r',s:'Above EPA limit'},{n:'Radium',d:'Naturally elevated in Florida limestone aquifer.',c:'r',s:'Above EPA limit some areas'},{n:'Nitrates',d:'Agricultural and septic runoff elevated in central FL.',c:'y',s:'Elevated'}]},
+  'NC':{city:'North Carolina',items:[{n:'PFAS (GenX)',d:'Cape Fear River Chemours contamination — Wilmington water crisis.',c:'r',s:'Critical — Wilmington area'},{n:'Nitrates',d:'Agricultural runoff elevated in eastern NC.',c:'y',s:'Elevated'},{n:'Lead',d:'Older housing in Charlotte and Durham.',c:'y',s:'Monitored'}]},
+  'GA':{city:'Georgia',items:[{n:'PFAS compounds',d:'Detected near Robins AFB above EPA limit.',c:'r',s:'Above EPA limit'},{n:'Trihalomethanes',d:'Elevated in Atlanta area chlorinated supply.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1986 Atlanta homes with lead service lines.',c:'y',s:'Risk in older areas'}]},
+  'CA':{city:'California',items:[{n:'Chromium-6',d:'IARC carcinogen — Central Valley particularly elevated above EWG guideline.',c:'r',s:'Above EWG guideline'},{n:'Nitrates',d:'Central Valley agricultural runoff — 1M+ Californians affected.',c:'r',s:'Above limit in rural areas'},{n:'Arsenic',d:'Naturally elevated in CA desert groundwater.',c:'y',s:'Elevated in desert'}]},
+  'WA':{city:'Washington State',items:[{n:'PFAS compounds',d:'Detected near Joint Base Lewis-McChord.',c:'r',s:'Above EPA limit near bases'},{n:'Lead',d:'Seattle and Tacoma older homes.',c:'y',s:'Risk in pre-1986 homes'},{n:'Nitrates',d:'Agricultural runoff in eastern WA.',c:'y',s:'Elevated'}]},
+  'OR':{city:'Oregon',items:[{n:'Nitrates',d:'Willamette Valley agriculture elevated in groundwater.',c:'y',s:'Elevated'},{n:'PFAS compounds',d:'Detected near Portland International Airport.',c:'y',s:'Monitored'},{n:'Lead',d:'Portland older housing with lead service lines.',c:'y',s:'Risk in older homes'}]},
+  'AZ':{city:'Arizona',items:[{n:'Arsenic',d:'Naturally elevated in AZ desert groundwater — above EPA limit in rural wells.',c:'r',s:'Above EPA limit rural'},{n:'Chromium-6',d:'Detected above EWG guidelines in Phoenix and Tucson.',c:'r',s:'Above EWG guideline'},{n:'Nitrates',d:'Agricultural runoff in AZ farming regions.',c:'y',s:'Elevated'}]},
+  'CO':{city:'Colorado',items:[{n:'PFAS compounds',d:'Peterson AFB and Buckley AFB contamination.',c:'r',s:'Above EPA limit near bases'},{n:'Nitrates',d:'Eastern plains agricultural runoff.',c:'y',s:'Elevated'},{n:'Uranium',d:'Naturally elevated in some CO mountain groundwater.',c:'y',s:'Monitored'}]},
+};
+
+function getWaterDataUS(zip) {
+  const n = parseInt(zip.substring(0,3));
+  if(n>=100&&n<=149) return WATER_US_STATE['NY'];
+  if(n>=150&&n<=196) return WATER_US_STATE['PA'];
+  if(n>=10&&n<=27) return WATER_US_STATE['MA'];
+  if(n>=70&&n<=89) return WATER_US_STATE['NJ'];
+  if(n>=300&&n<=319) return WATER_US_STATE['GA'];
+  if(n>=320&&n<=349) return WATER_US_STATE['FL'];
+  if(n>=270&&n<=289) return WATER_US_STATE['NC'];
+  if(n>=730&&n<=799) return WATER_US_STATE['TX'];
+  if(n>=600&&n<=629) return WATER_US_STATE['IL'];
+  if(n>=480&&n<=499) return WATER_US_STATE['MI'];
+  if(n>=430&&n<=458) return WATER_US_STATE['OH'];
+  if(n>=550&&n<=567) return WATER_US_STATE['MN'];
+  if(n>=900&&n<=961) return WATER_US_STATE['CA'];
+  if(n>=970&&n<=979) return WATER_US_STATE['OR'];
+  if(n>=980&&n<=994) return WATER_US_STATE['WA'];
+  if(n>=850&&n<=865) return WATER_US_STATE['AZ'];
+  if(n>=800&&n<=816) return WATER_US_STATE['CO'];
+  return {city:'United States',items:[{n:'PFAS compounds',d:'45% of US tap water contains PFAS (USGS 2023).',c:'r',s:'Nationally detected'},{n:'Lead',d:'10 million US homes still have lead service lines.',c:'r',s:'Risk in pre-1986 homes'},{n:'Trihalomethanes',d:'Chlorination byproducts in most municipal supplies.',c:'y',s:'Elevated'}]};
+}
+
+function getWaterDataCA(zip) {
+  const k = zip.replace(/\s/g,'').charAt(0).toUpperCase();
+  const d = {'V':{city:'🇨🇦 British Columbia',items:[{n:'Trihalomethanes',d:'Metro Vancouver THMs elevated above Health Canada aesthetic guidelines.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 Vancouver homes may have lead solder.',c:'r',s:'Risk in older homes'},{n:'Microplastics',d:'Detected in Greater Vancouver tap water.',c:'y',s:'Emerging'}]},'T':{city:'🇨🇦 Alberta',items:[{n:'Nitrates',d:'Southern Alberta irrigation districts — agricultural runoff elevated.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Bow River chlorination byproducts in Calgary supply.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 older housing in Edmonton and Calgary.',c:'y',s:'Risk in older homes'}]},'S':{city:'🇨🇦 Saskatchewan',items:[{n:'Nitrates',d:'Highest agricultural nitrate contamination in Canada — 40% of wells above guideline.',c:'r',s:'Critical in rural areas'},{n:'Uranium',d:'Naturally elevated in Saskatchewan Prairie groundwater.',c:'y',s:'Monitored'},{n:'Arsenic',d:'Naturally occurring in some SK wells above Health Canada guideline.',c:'y',s:'Monitored'}]},'R':{city:'🇨🇦 Manitoba',items:[{n:'Trihalomethanes',d:'Red River high organic content — elevated THMs after chlorination.',c:'r',s:'Above guideline'},{n:'Nitrates',d:'Manitoba farm runoff elevated in rural areas.',c:'y',s:'Elevated'},{n:'Algal toxins',d:'Lake Winnipeg algal blooms — microcystin risk in summer.',c:'y',s:'Seasonal risk'}]},'M':{city:'🇨🇦 Ontario (Toronto)',items:[{n:'Lead',d:'Toronto has 60,000+ lead service lines still active.',c:'r',s:'Critical'},{n:'PFAS compounds',d:'Detected in multiple Ontario source waters.',c:'r',s:'Detected'},{n:'Trihalomethanes',d:'Lake Ontario chlorination byproducts.',c:'y',s:'Elevated'}]},'K':{city:'🇨🇦 Ontario (Ottawa)',items:[{n:'Lead',d:'Ottawa older neighborhoods with pre-1950 lead service lines.',c:'r',s:'Risk in older areas'},{n:'PFAS compounds',d:'Detected in Ottawa River tributaries.',c:'y',s:'Monitored'},{n:'Trihalomethanes',d:'Ottawa River source water chlorination byproducts.',c:'y',s:'Elevated'}]},'H':{city:'🇨🇦 Quebec (Montreal)',items:[{n:'Lead',d:'Montreal oldest housing — thousands of pre-1970 lead pipes.',c:'r',s:'Critical'},{n:'Trihalomethanes',d:'St. Lawrence River chlorination — elevated THMs.',c:'r',s:'Above guideline'},{n:'Chloramines',d:'Montreal uses chloramination.',c:'y',s:'Detected'}]},'G':{city:'🇨🇦 Quebec City',items:[{n:'Lead',d:'Historic district buildings at highest risk.',c:'r',s:'Risk in Vieux-Québec'},{n:'Trihalomethanes',d:'St. Lawrence chlorination byproducts.',c:'y',s:'Elevated'},{n:'Microplastics',d:'Detected in Quebec City tap water.',c:'y',s:'Emerging'}]}};
+  return d[k]||{city:'🇨🇦 Canada',items:[{n:'Chloramines',d:'Standard disinfectant in Canadian systems.',c:'y',s:'Detected'},{n:'Lead',d:'Pre-1990 homes may have lead solder.',c:'r',s:'Risk in older homes'},{n:'Trihalomethanes',d:'Disinfection byproduct in municipal supply.',c:'y',s:'Elevated'}]};
+}
+
+function getWaterDataAU(zip) {
+  const d = {'2':{city:'🇦🇺 New South Wales',items:[{n:'PFAS compounds',d:'Detected near RAAF Williamtown — critical near bases.',c:'r',s:'Critical near bases'},{n:'Chloramines',d:'Sydney uses chloramination.',c:'y',s:'Detected'},{n:'Fluoride',d:'Added at 1.0 mg/L in Sydney.',c:'y',s:'Added'}]},'3':{city:'🇦🇺 Victoria',items:[{n:'PFAS compounds',d:'Detected near East Sale RAAF base.',c:'r',s:'Detected'},{n:'Trihalomethanes',d:'Yarra River catchment — seasonal organic matter elevates byproducts.',c:'y',s:'Seasonal'},{n:'Aluminium',d:'Treatment residuals in Melbourne supply.',c:'y',s:'Trace'}]},'4':{city:'🇦🇺 Queensland',items:[{n:'PFAS compounds',d:'Near Oakey Army Aviation Centre — class action settled.',c:'r',s:'Critical near Oakey'},{n:'Trihalomethanes',d:'Warm climate accelerates THM formation in SEQ supply.',c:'r',s:'Elevated'},{n:'Fluoride',d:'Added at 1.0 mg/L across Queensland.',c:'y',s:'Added'}]},'5':{city:'🇦🇺 South Australia',items:[{n:'Trihalomethanes',d:'Murray River source water — highest THM levels in Australia.',c:'r',s:'Above NHMRC guideline'},{n:'Salinity',d:'Murray River salinity elevated — affects taste and sodium intake.',c:'y',s:'Elevated'},{n:'Fluoride',d:'Added at 1.0 mg/L in Adelaide.',c:'y',s:'Added'}]},'6':{city:'🇦🇺 Western Australia',items:[{n:'PFAS compounds',d:'Detected near RAAF Pearce above NHMRC guidance.',c:'r',s:'Above guidance near bases'},{n:'Nitrates',d:'Perth groundwater nitrate elevated.',c:'y',s:'Elevated'},{n:'Chloramines',d:'Perth Water uses chloramination.',c:'y',s:'Detected'}]}};
+  return d[zip.charAt(0)]||{city:'🇦🇺 Australia',items:[{n:'Chlorine & chloramines',d:'Standard disinfection across states.',c:'y',s:'Detected'},{n:'Fluoride',d:'Added at 0.6–1.0 mg/L in most states.',c:'y',s:'Added'},{n:'PFAS compounds',d:'Detected near military bases.',c:'r',s:'Monitored'}]};
+}
+
+function getWaterDataGB(zip) {
+  const z = zip.replace(/\s/g,'').toUpperCase();
+  if(['E','N','NW','SE','SW','W','EC','WC'].some(p=>z.startsWith(p))) return {city:'🇬🇧 London',items:[{n:'Lead',d:'London highest density of Victorian lead pipes — 1M+ affected properties.',c:'r',s:'Critical in pre-1970 homes'},{n:'Chlorine',d:'Thames Water uses elevated chlorine.',c:'y',s:'Detectable'},{n:'Nitrates',d:'Thames catchment agricultural runoff.',c:'y',s:'Seasonal'}]};
+  if(z.startsWith('M')&&!z.startsWith('ML')) return {city:'🇬🇧 Manchester',items:[{n:'Lead',d:'Victorian housing — Salford and Oldham at highest risk.',c:'r',s:'Risk in pre-1970 homes'},{n:'Trihalomethanes',d:'Chlorination of Pennine reservoir water.',c:'y',s:'Elevated'},{n:'Aluminium',d:'NW Water treatment residuals.',c:'y',s:'Trace'}]};
+  if(z.startsWith('B')&&!z.startsWith('BT')) return {city:'🇬🇧 Birmingham',items:[{n:'Lead',d:'Birmingham Victorian lead pipe network.',c:'r',s:'Risk in pre-1970 homes'},{n:'Nitrates',d:'Agricultural runoff in Severn catchment.',c:'y',s:'Elevated'},{n:'Trihalomethanes',d:'Severn Trent chlorination byproducts.',c:'y',s:'Elevated'}]};
+  if(z.startsWith('EH')) return {city:'🇬🇧 Edinburgh',items:[{n:'Lead',d:'Edinburgh oldest Victorian lead pipe network in Scotland.',c:'r',s:'Risk in tenements'},{n:'Trihalomethanes',d:'Loch Katrine source water chlorination.',c:'y',s:'Low-moderate'},{n:'Aluminium',d:'Scottish Water treatment residuals.',c:'y',s:'Trace'}]};
+  if(z.startsWith('G')&&!z.startsWith('GL')) return {city:'🇬🇧 Glasgow',items:[{n:'Lead',d:'Glasgow highest lead pipe concentration in Scotland.',c:'r',s:'Critical in tenements'},{n:'Trihalomethanes',d:'Loch Lomond source water chlorination.',c:'y',s:'Elevated'},{n:'Aluminium',d:'Scottish Water treatment residuals.',c:'y',s:'Trace'}]};
+  return {city:'🇬🇧 United Kingdom',items:[{n:'Lead',d:'Pre-1970 properties may have lead pipes.',c:'r',s:'Risk in older properties'},{n:'Trihalomethanes',d:'Chlorination byproducts in municipal supply.',c:'y',s:'Elevated'},{n:'Nitrates',d:'Agricultural runoff in rural England.',c:'y',s:'Elevated rural'}]};
 }
 
 function getRegionFromPostcode(zip, country) {
@@ -917,18 +1356,21 @@ function lookupZip(zip, country){
   setTimeout(()=>{
     document.getElementById('zipSp').classList.remove('on');
     let d;
-    const _co = ALL_COUNTRIES.find(c=>c.code===country);
     if(country === 'us' || !country){
       d = getWaterDataUS(zip);
     } else if(country === 'de') {
       d = getWaterDataDE(zip);
-    } else if(['ca','gb','au'].includes(country)) {
-      d = getWaterDataCountry(zip, country) || {city: (_co?_co.flag+' ':'')+zip.toUpperCase(), items:[]};
+    } else if(country === 'ca') {
+      d = getWaterDataCA(zip);
+    } else if(country === 'au') {
+      d = getWaterDataAU(zip);
+    } else if(country === 'gb') {
+      d = getWaterDataGB(zip);
     } else {
+      const _co = ALL_COUNTRIES.find(c=>c.code===country);
       const regionCity = getRegionFromPostcode(zip, country);
-      const countryData = {items:[{n:'Chlorine byproducts',d:'Standard disinfection byproducts.',c:'y',s:'Detected'},{n:'Lead',d:'Risk in older buildings.',c:'y',s:'Monitored'}]};
       const cityName = regionCity || ((_co?_co.flag+' ':'')+zip.toUpperCase()+', '+(_co?_co.name:''));
-      d = {...countryData, city: cityName};
+      d = {city: cityName, items:[{n:'Chlorine byproducts',d:'Standard municipal disinfection.',c:'y',s:'Detected'},{n:'Lead',d:'Risk in buildings pre-1980.',c:'y',s:'Monitored'}]};
     }
     S.city = d.city;
     document.getElementById('locCity').textContent = d.city;
@@ -1316,7 +1758,7 @@ async function runDeepAnalysis(){
 }
 
 async function callDeepClaude(){
-  const water = WATER[S.zip] || {city:"Your area",items:[{n:"PFAS compounds",d:"45% of US tap water contains PFAS (USGS 2023).",c:"r",s:"Nationally detected"},{n:"Lead",d:"Risk in pre-1986 homes.",c:"r",s:"Monitored"}]};
+  const water = WATER[S.zip] ;
   const waterIssues = water.items.map(i=>i.n).join(', ');
   const deepAnswerList = deepProducts.length
     ? deepProducts.map(p => '- User answered: "'+p.name+'" — risk: '+(p.risk==='r'?'Critical':p.risk==='y'?'Moderate':'Low')).join('\n')
