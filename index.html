@@ -1186,82 +1186,99 @@ const WATER_COUNTRY_DEF = {
 };
 
 
-// Regional city lookup from postcode prefix
+// Regional postcode → city + specific water data
+const WATER_DE = {
+  '00-09': {city:'🇩🇪 Dresden / Saxony',items:[{n:'Nitrate',d:'Elevated in Saxon agricultural plains — EU limit exceeded in 31% of sites.',c:'y',s:'Elevated'},{n:'Uranium traces',d:'Natural geological uranium in Saxon granite regions.',c:'y',s:'Monitored'},{n:'Lead',d:'Pre-1973 Altbau buildings common in Dresden and Leipzig.',c:'r',s:'Risk in Altbau'}]},
+  '10-19': {city:'🇩🇪 Berlin / Brandenburg',items:[{n:'Lead',d:'Berlin has high rate of pre-1973 lead service pipes — 30,000+ buildings still connected.',c:'r',s:'Critical in Altbau'},{n:'Nitrate',d:'Elevated in Brandenburg agricultural zones surrounding Berlin.',c:'y',s:'Elevated rural'},{n:'PFAS traces',d:'Detected near Berlin airports and military sites in Brandenburg.',c:'y',s:'Monitored'}]},
+  '20-21': {city:'🇩🇪 Hamburg',items:[{n:'Lead',d:'Hamburg Altbau buildings pre-1973 may have lead house connections.',c:'r',s:'Risk in Altbau'},{n:'Trihalomethanes',d:'Chlorination byproducts in Hamburg municipal supply — regularly monitored.',c:'y',s:'Low-moderate'},{n:'Microplastics',d:'Elbe river source water — microplastics detected in Hamburg supply.',c:'y',s:'Emerging concern'}]},
+  '22-29': {city:'🇩🇪 Schleswig-Holstein / North Germany',items:[{n:'Nitrate',d:'Intensive agriculture in Schleswig-Holstein — groundwater nitrate above EU limit in 42% of sites.',c:'r',s:'Above EU limit'},{n:'Pesticide residues',d:'Glyphosate and MCPA traces in agricultural groundwater.',c:'y',s:'Detected'},{n:'Lead',d:'Older buildings may have lead pipes.',c:'y',s:'Monitored'}]},
+  '30-39': {city:'🇩🇪 Hannover / Lower Saxony',items:[{n:'Nitrate',d:'Lower Saxony has Germany's highest nitrate levels — 58% of groundwater sites above 50mg/L.',c:'r',s:'Critical — above EU limit'},{n:'Pesticide residues',d:'Intensive agriculture around Hannover — atrazine and glyphosate metabolites.',c:'r',s:'Detected'},{n:'Lead',d:'Pre-1973 buildings with lead pipes.',c:'y',s:'Monitored'}]},
+  '40-49': {city:'🇩🇪 Düsseldorf / NRW',items:[{n:'Lead',d:'NRW has highest density of pre-1973 lead service lines in Germany.',c:'r',s:'Critical in Altbau'},{n:'PFAS compounds',d:'Rhine river PFAS contamination — detected above EU 2026 limits in multiple NRW utilities.',c:'r',s:'Above EU 2026 limit'},{n:'Trihalomethanes',d:'Rhine water chlorination produces elevated THM levels.',c:'y',s:'Elevated'}]},
+  '50-59': {city:'🇩🇪 Cologne / Ruhr',items:[{n:'PFAS compounds',d:'Ruhr / Rhine water has detectable PFAS — industrial legacy contamination.',c:'r',s:'Above EU guideline'},{n:'Lead',d:'Dense Altbau stock in Cologne, Dortmund, Essen.',c:'r',s:'Risk in Altbau'},{n:'Chromium',d:'Industrial legacy in Ruhr valley — chromium traces in some catchments.',c:'y',s:'Monitored'}]},
+  '60-65': {city:'🇩🇪 Frankfurt / Hesse',items:[{n:'Nitrate',d:'Hessian agricultural zones — nitrate above EU limit in 26% of sites.',c:'y',s:'Elevated'},{n:'Lead',d:'Frankfurt Altbau buildings with pre-1973 lead connections.',c:'r',s:'Risk in Altbau'},{n:'Trihalomethanes',d:'Main river source water — chlorination byproducts detected.',c:'y',s:'Low-moderate'}]},
+  '66-69': {city:'🇩🇪 Mannheim / Heidelberg, Baden-Württemberg',items:[{n:'Nitrate',d:'Rhine plain agriculture — nitrate elevated in shallow groundwater.',c:'y',s:'Elevated'},{n:'Pesticide residues',d:'Intensive Rhine valley agriculture.',c:'y',s:'Low-moderate'},{n:'Lead',d:'Pre-1973 Altbau in Mannheim and Ludwigshafen.',c:'y',s:'Monitored'}]},
+  '70-76': {city:'🇩🇪 Stuttgart, Baden-Württemberg',items:[{n:'Lead',d:'Stuttgart Altbau buildings — pre-1973 lead pipes still in service.',c:'r',s:'Risk in Altbau'},{n:'Nitrate',d:'Baden-Württemberg farming regions — elevated in 24% of groundwater sites.',c:'y',s:'Elevated'},{n:'Hardness',d:'Stuttgart water is very hard (Gesamthärte ~20°dH) — limescale affects kettles, pipes and skin.',c:'y',s:'Sehr hart / Very hard'}]},
+  '77-79': {city:'🇩🇪 Freiburg / Black Forest, Baden-Württemberg',items:[{n:'Radon',d:'Black Forest granite geology — radon in private wells above WHO guideline of 100 Bq/L.',c:'r',s:'Elevated in private wells'},{n:'Pesticide residues',d:'Rhine valley intensive farming — traces detected.',c:'y',s:'Low'},{n:'Hardness',d:'Freiburg water moderately hard (~14°dH).',c:'y',s:'Mittelhart'}]},
+  '80-87': {city:'🇩🇪 Munich / Upper Bavaria',items:[{n:'Lead',d:'Munich has approx. 40,000 Altbau apartments with pre-1973 lead connections still in use.',c:'r',s:'Critical in Altbau'},{n:'Nitrate',d:'Bavarian agricultural zones — elevated especially around Ingolstadt and Landshut.',c:'y',s:'Elevated in farming zones'},{n:'Hardness',d:'Munich tap water is very hard (18–20°dH) — affects taste and limescale buildup.',c:'y',s:'Sehr hart / Very hard'}]},
+  '88-89': {city:'🇩🇪 Ulm / Upper Swabia',items:[{n:'Nitrate',d:'Upper Swabia intensive dairy farming — nitrate elevated in shallow groundwater.',c:'y',s:'Elevated'},{n:'Pesticide residues',d:'Agricultural pesticide traces in groundwater.',c:'y',s:'Low'},{n:'Lead',d:'Older building stock with pre-1973 pipes.',c:'y',s:'Monitored'}]},
+  '90-96': {city:'🇩🇪 Nuremberg / Franconia, Bavaria',items:[{n:'Nitrate',d:'Franconian agricultural plains — elevated in 30% of monitoring sites.',c:'y',s:'Elevated'},{n:'Lead',d:'Nuremberg Altbau buildings pre-1973.',c:'r',s:'Risk in Altbau'},{n:'Hardness',d:'Nuremberg water hard to very hard (~16–18°dH) depending on source.',c:'y',s:'Hart'}]},
+  '97-99': {city:'🇩🇪 Würzburg / Main-Franconia',items:[{n:'Nitrate',d:'Main-Franconia farming region — elevated nitrate in groundwater.',c:'y',s:'Elevated'},{n:'Lead',d:'Würzburg Altbau buildings may have lead pipes.',c:'y',s:'Monitored'},{n:'Hardness',d:'Hard water in Main valley (~18°dH).',c:'y',s:'Hart'}]},
+};
+
+function getWaterDataDE(zip) {
+  const prefix = parseInt(zip.substring(0,2));
+  if(prefix <= 9) return WATER_DE['00-09'];
+  if(prefix <= 19) return WATER_DE['10-19'];
+  if(prefix <= 21) return WATER_DE['20-21'];
+  if(prefix <= 29) return WATER_DE['22-29'];
+  if(prefix <= 39) return WATER_DE['30-39'];
+  if(prefix <= 49) return WATER_DE['40-49'];
+  if(prefix <= 59) return WATER_DE['50-59'];
+  if(prefix <= 65) return WATER_DE['60-65'];
+  if(prefix <= 69) return WATER_DE['66-69'];
+  if(prefix <= 76) return WATER_DE['70-76'];
+  if(prefix <= 79) return WATER_DE['77-79'];
+  if(prefix <= 87) return WATER_DE['80-87'];
+  if(prefix <= 89) return WATER_DE['88-89'];
+  if(prefix <= 96) return WATER_DE['90-96'];
+  return WATER_DE['97-99'];
+}
+
 function getRegionFromPostcode(zip, country) {
   const z = zip.replace(/\s/g,'').toUpperCase();
-  if(country === 'de') {
-    const prefix = parseInt(z.substring(0,2));
-    if(prefix <= 9) return '🇩🇪 Munich area, Bavaria';
-    if(prefix <= 19) return '🇩🇪 Rostock area, Mecklenburg';
-    if(prefix <= 29) return '🇩🇪 Hamburg / North Germany';
-    if(prefix <= 39) return '🇩🇪 Hannover area, Lower Saxony';
-    if(prefix <= 49) return '🇩🇪 Münster area, NRW';
-    if(prefix <= 59) return '🇩🇪 Dortmund / Ruhr area, NRW';
-    if(prefix <= 65) return '🇩🇪 Frankfurt area, Hesse';
-    if(prefix <= 69) return '🇩🇪 Heidelberg / Mannheim, Baden-Württemberg';
-    if(prefix <= 76) return '🇩🇪 Stuttgart area, Baden-Württemberg';
-    if(prefix <= 79) return '🇩🇪 Freiburg area, Baden-Württemberg';
-    if(prefix <= 87) return '🇩🇪 Augsburg / Allgäu, Bavaria';
-    if(prefix <= 96) return '🇩🇪 Nuremberg area, Bavaria';
-    return '🇩🇪 Munich area, Bavaria';
-  }
   if(country === 'gb') {
-    if(z.startsWith('E') || z.startsWith('EC') || z.startsWith('N') || z.startsWith('NW') || z.startsWith('SE') || z.startsWith('SW') || z.startsWith('W') || z.startsWith('WC')) return '🇬🇧 London';
+    if(['E','EC','N','NW','SE','SW','W','WC'].some(p=>z.startsWith(p))) return '🇬🇧 London';
     if(z.startsWith('M')) return '🇬🇧 Manchester';
     if(z.startsWith('B')) return '🇬🇧 Birmingham';
     if(z.startsWith('EH')) return '🇬🇧 Edinburgh, Scotland';
     if(z.startsWith('G')) return '🇬🇧 Glasgow, Scotland';
     if(z.startsWith('CF')) return '🇬🇧 Cardiff, Wales';
     if(z.startsWith('LS')) return '🇬🇧 Leeds';
-    if(z.startsWith('S')) return '🇬🇧 Sheffield';
-    return '🇬🇧 UK';
+    return '🇬🇧 United Kingdom';
   }
   if(country === 'fr') {
-    const prefix = parseInt(z.substring(0,2));
-    if(prefix === 75 || (prefix >= 77 && prefix <= 78) || (prefix >= 91 && prefix <= 95)) return '🇫🇷 Paris region, Île-de-France';
-    if(prefix === 13) return '🇫🇷 Marseille, Provence';
-    if(prefix === 69) return '🇫🇷 Lyon, Auvergne-Rhône-Alpes';
-    if(prefix === 31) return '🇫🇷 Toulouse, Occitanie';
-    if(prefix === 33) return '🇫🇷 Bordeaux, Nouvelle-Aquitaine';
-    if(prefix === 67) return '🇫🇷 Strasbourg, Alsace';
-    if(prefix === 59) return '🇫🇷 Lille, Hauts-de-France';
-    if(prefix <= 29) return '🇫🇷 Brittany — elevated nitrates region';
+    const p = parseInt(z.substring(0,2));
+    if(p===75||(p>=77&&p<=78)||(p>=91&&p<=95)) return '🇫🇷 Paris region';
+    if(p===13) return '🇫🇷 Marseille, Provence';
+    if(p===69) return '🇫🇷 Lyon';
+    if(p===31) return '🇫🇷 Toulouse, Occitanie';
+    if(p===33) return '🇫🇷 Bordeaux';
+    if(p===67) return '🇫🇷 Strasbourg, Alsace';
+    if(p===59) return '🇫🇷 Lille, Hauts-de-France';
+    if(p<=29) return '🇫🇷 Brittany — elevated nitrates region';
     return '🇫🇷 France';
   }
   if(country === 'at') {
-    const prefix = parseInt(z.substring(0,1));
-    if(prefix === 1) return '🇦🇹 Vienna';
-    if(prefix === 5) return '🇦🇹 Vorarlberg / Tyrol, Alps';
-    if(prefix === 6) return '🇦🇹 Salzburg';
-    if(prefix === 8) return '🇦🇹 Graz, Styria';
+    const p = parseInt(z.substring(0,1));
+    if(p===1) return '🇦🇹 Vienna';
+    if(p===5) return '🇦🇹 Vorarlberg / Tyrol';
+    if(p===6) return '🇦🇹 Salzburg';
+    if(p===8) return '🇦🇹 Graz, Styria';
     return '🇦🇹 Austria';
   }
   if(country === 'ch') {
-    const prefix = parseInt(z.substring(0,1));
-    if(prefix === 8) return '🇨🇭 Zurich';
-    if(prefix === 4) return '🇨🇭 Basel';
-    if(prefix === 3) return '🇨🇭 Bern';
-    if(prefix === 1) return '🇨🇭 Geneva area';
-    if(prefix === 6) return '🇨🇭 Lucerne / Central Switzerland';
+    const p = parseInt(z.substring(0,1));
+    if(p===8) return '🇨🇭 Zurich';
+    if(p===4) return '🇨🇭 Basel';
+    if(p===3) return '🇨🇭 Bern';
+    if(p===1) return '🇨🇭 Geneva';
+    if(p===6) return '🇨🇭 Lucerne';
     return '🇨🇭 Switzerland';
   }
   if(country === 'ca') {
-    if(z.startsWith('V')) return '🇨🇦 British Columbia (Vancouver area)';
-    if(z.startsWith('T')) return '🇨🇦 Alberta (Calgary/Edmonton)';
-    if(z.startsWith('S')) return '🇨🇦 Saskatchewan';
-    if(z.startsWith('R')) return '🇨🇦 Manitoba (Winnipeg)';
-    if(z.startsWith('M') || z.startsWith('L') || z.startsWith('K') || z.startsWith('N')) return '🇨🇦 Ontario';
-    if(z.startsWith('H') || z.startsWith('G') || z.startsWith('J')) return '🇨🇦 Quebec (Montreal/Quebec City)';
+    if(z.startsWith('V')) return '🇨🇦 British Columbia';
+    if(z.startsWith('T')) return '🇨🇦 Alberta';
+    if(z.startsWith('M')||z.startsWith('L')||z.startsWith('K')||z.startsWith('N')) return '🇨🇦 Ontario';
+    if(z.startsWith('H')||z.startsWith('G')||z.startsWith('J')) return '🇨🇦 Quebec';
     return '🇨🇦 Canada';
   }
   if(country === 'au') {
-    const prefix = parseInt(z.substring(0,1));
-    if(prefix === 2) return '🇦🇺 New South Wales (Sydney area)';
-    if(prefix === 3) return '🇦🇺 Victoria (Melbourne area)';
-    if(prefix === 4) return '🇦🇺 Queensland (Brisbane area)';
-    if(prefix === 5) return '🇦🇺 South Australia (Adelaide)';
-    if(prefix === 6) return '🇦🇺 Western Australia (Perth)';
-    if(prefix === 7) return '🇦🇺 Tasmania';
+    const p = parseInt(z.substring(0,1));
+    if(p===2) return '🇦🇺 New South Wales';
+    if(p===3) return '🇦🇺 Victoria';
+    if(p===4) return '🇦🇺 Queensland';
+    if(p===5) return '🇦🇺 South Australia';
+    if(p===6) return '🇦🇺 Western Australia';
     return '🇦🇺 Australia';
   }
   return null;
@@ -1278,12 +1295,16 @@ function lookupZip(zip, country){
     if(country === 'us' || !country){
       d = WATER[zip] || DEF;
     } else {
-      d = WATER_COUNTRY_DEF[country] || DEF;
       const _co = ALL_COUNTRIES.find(c=>c.code===country);
-      // Get regional city name from postcode
-      const regionCity = getRegionFromPostcode(zip, country);
-      const cityName = regionCity || ((_co?_co.flag:'') + ' ' + zip.toUpperCase() + ', ' + (_co?_co.name:''));
-      d = {...d, city: cityName};
+      // For Germany: use PLZ-specific water data
+      if(country === 'de') {
+        d = getWaterDataDE(zip);
+      } else {
+        d = WATER_COUNTRY_DEF[country] || DEF;
+        const regionCity = getRegionFromPostcode(zip, country);
+        const cityName = regionCity || ((_co?_co.flag:'') + ' ' + zip.toUpperCase() + ', ' + (_co?_co.name:''));
+        d = {...d, city: cityName};
+      }
     }
     S.city = d.city;
     document.getElementById('locCity').textContent = d.city;
