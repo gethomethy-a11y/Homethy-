@@ -1170,7 +1170,7 @@ const WATER_COUNTRY_DEF = {
   ca:{items:[{n:'Chloramines',d:'Standard disinfectant in Canadian municipal systems. Harder to filter than chlorine.',c:'y',s:'Detected'},{n:'Trihalomethanes',d:'Disinfection byproduct regulated under Health Canada guidelines.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1990 homes may have lead solder and service lines.',c:'r',s:'Risk in older homes'}]},
   gb:{items:[{n:'Chlorine',d:'Used widely in UK water treatment. Reacts with organic matter to form byproducts.',c:'y',s:'Detectable'},{n:'Lead',d:'Pre-1970 properties may still have lead pipes — especially in England.',c:'r',s:'Older property risk'},{n:'Nitrates',d:'Agricultural runoff elevated in rural areas of England and Wales.',c:'y',s:'Elevated in rural areas'}]},
   au:{items:[{n:'Chlorine & chloramines',d:'Standard disinfection across all Australian states.',c:'y',s:'Detected'},{n:'Fluoride',d:'Added at 0.6–1.0 mg/L in most Australian states.',c:'y',s:'Added'},{n:'Aluminium',d:'Used as flocculant in water treatment. Trace residual amounts.',c:'y',s:'Trace levels'}]},
-  de:{items:[{n:'Nitrate',d:'Elevated in agriculturally intensive regions. EU limit 50 mg/L.',c:'y',s:'Elevated in farming regions'},{n:'Pesticide residues',d:'Atrazine and other traces in intensive farming areas.',c:'y',s:'Low levels detected'},{n:'Lead',d:'Pre-1973 buildings may still have lead pipes.',c:'r',s:'Risk in old buildings'}]},
+  de:{items:[{n:'Nitrate',d:'Elevated in Bavaria, Baden-Württemberg, and NRW farming regions. EU limit 50 mg/L — exceeded in 28% of monitoring sites.',c:'y',s:'Region-dependent'},{n:'Pesticide residues',d:'Glyphosate and atrazine metabolites detected in agricultural regions of Bavaria and Thuringia.',c:'y',s:'Low-moderate'},{n:'Lead',d:'Pre-1973 buildings (Altbau) may have lead solder or lead service pipes — common in Berlin, Hamburg, Munich.',c:'r',s:'Risk in Altbau'}]},
   nl:{items:[{n:'Nitrates',d:'High agricultural intensity — detectable in groundwater-fed regions.',c:'y',s:'Elevated in east NL'},{n:'PFAS compounds',d:'Detected in several systems, particularly near industrial zones.',c:'r',s:'Above EU guideline'},{n:'Chlorine byproducts',d:'Standard disinfection byproducts in municipal supply.',c:'y',s:'Detectable'}]},
   fr:{items:[{n:'Pesticides',d:'France has intensive agriculture — atrazine detected in many water systems.',c:'y',s:'Detected'},{n:'Nitrates',d:'Agricultural runoff elevated especially in Brittany and Loire regions.',c:'y',s:'Elevated'},{n:'Lead',d:'Pre-1948 buildings may have lead pipes.',c:'r',s:'Risk in old buildings'}]},
   jp:{items:[{n:'Trihalomethanes',d:'Chlorination byproducts present in municipal supply.',c:'y',s:'Low-level detected'},{n:'Radon',d:'Elevated in areas with granite geology.',c:'y',s:'Some regions elevated'},{n:'Arsenic',d:'Natural geological arsenic in some rural groundwater sources.',c:'r',s:'Monitored'}]},
@@ -1186,6 +1186,88 @@ const WATER_COUNTRY_DEF = {
 };
 
 
+// Regional city lookup from postcode prefix
+function getRegionFromPostcode(zip, country) {
+  const z = zip.replace(/\s/g,'').toUpperCase();
+  if(country === 'de') {
+    const prefix = parseInt(z.substring(0,2));
+    if(prefix <= 9) return '🇩🇪 Munich area, Bavaria';
+    if(prefix <= 19) return '🇩🇪 Rostock area, Mecklenburg';
+    if(prefix <= 29) return '🇩🇪 Hamburg / North Germany';
+    if(prefix <= 39) return '🇩🇪 Hannover area, Lower Saxony';
+    if(prefix <= 49) return '🇩🇪 Münster area, NRW';
+    if(prefix <= 59) return '🇩🇪 Dortmund / Ruhr area, NRW';
+    if(prefix <= 65) return '🇩🇪 Frankfurt area, Hesse';
+    if(prefix <= 69) return '🇩🇪 Heidelberg / Mannheim, Baden-Württemberg';
+    if(prefix <= 76) return '🇩🇪 Stuttgart area, Baden-Württemberg';
+    if(prefix <= 79) return '🇩🇪 Freiburg area, Baden-Württemberg';
+    if(prefix <= 87) return '🇩🇪 Augsburg / Allgäu, Bavaria';
+    if(prefix <= 96) return '🇩🇪 Nuremberg area, Bavaria';
+    return '🇩🇪 Munich area, Bavaria';
+  }
+  if(country === 'gb') {
+    if(z.startsWith('E') || z.startsWith('EC') || z.startsWith('N') || z.startsWith('NW') || z.startsWith('SE') || z.startsWith('SW') || z.startsWith('W') || z.startsWith('WC')) return '🇬🇧 London';
+    if(z.startsWith('M')) return '🇬🇧 Manchester';
+    if(z.startsWith('B')) return '🇬🇧 Birmingham';
+    if(z.startsWith('EH')) return '🇬🇧 Edinburgh, Scotland';
+    if(z.startsWith('G')) return '🇬🇧 Glasgow, Scotland';
+    if(z.startsWith('CF')) return '🇬🇧 Cardiff, Wales';
+    if(z.startsWith('LS')) return '🇬🇧 Leeds';
+    if(z.startsWith('S')) return '🇬🇧 Sheffield';
+    return '🇬🇧 UK';
+  }
+  if(country === 'fr') {
+    const prefix = parseInt(z.substring(0,2));
+    if(prefix === 75 || (prefix >= 77 && prefix <= 78) || (prefix >= 91 && prefix <= 95)) return '🇫🇷 Paris region, Île-de-France';
+    if(prefix === 13) return '🇫🇷 Marseille, Provence';
+    if(prefix === 69) return '🇫🇷 Lyon, Auvergne-Rhône-Alpes';
+    if(prefix === 31) return '🇫🇷 Toulouse, Occitanie';
+    if(prefix === 33) return '🇫🇷 Bordeaux, Nouvelle-Aquitaine';
+    if(prefix === 67) return '🇫🇷 Strasbourg, Alsace';
+    if(prefix === 59) return '🇫🇷 Lille, Hauts-de-France';
+    if(prefix <= 29) return '🇫🇷 Brittany — elevated nitrates region';
+    return '🇫🇷 France';
+  }
+  if(country === 'at') {
+    const prefix = parseInt(z.substring(0,1));
+    if(prefix === 1) return '🇦🇹 Vienna';
+    if(prefix === 5) return '🇦🇹 Vorarlberg / Tyrol, Alps';
+    if(prefix === 6) return '🇦🇹 Salzburg';
+    if(prefix === 8) return '🇦🇹 Graz, Styria';
+    return '🇦🇹 Austria';
+  }
+  if(country === 'ch') {
+    const prefix = parseInt(z.substring(0,1));
+    if(prefix === 8) return '🇨🇭 Zurich';
+    if(prefix === 4) return '🇨🇭 Basel';
+    if(prefix === 3) return '🇨🇭 Bern';
+    if(prefix === 1) return '🇨🇭 Geneva area';
+    if(prefix === 6) return '🇨🇭 Lucerne / Central Switzerland';
+    return '🇨🇭 Switzerland';
+  }
+  if(country === 'ca') {
+    if(z.startsWith('V')) return '🇨🇦 British Columbia (Vancouver area)';
+    if(z.startsWith('T')) return '🇨🇦 Alberta (Calgary/Edmonton)';
+    if(z.startsWith('S')) return '🇨🇦 Saskatchewan';
+    if(z.startsWith('R')) return '🇨🇦 Manitoba (Winnipeg)';
+    if(z.startsWith('M') || z.startsWith('L') || z.startsWith('K') || z.startsWith('N')) return '🇨🇦 Ontario';
+    if(z.startsWith('H') || z.startsWith('G') || z.startsWith('J')) return '🇨🇦 Quebec (Montreal/Quebec City)';
+    return '🇨🇦 Canada';
+  }
+  if(country === 'au') {
+    const prefix = parseInt(z.substring(0,1));
+    if(prefix === 2) return '🇦🇺 New South Wales (Sydney area)';
+    if(prefix === 3) return '🇦🇺 Victoria (Melbourne area)';
+    if(prefix === 4) return '🇦🇺 Queensland (Brisbane area)';
+    if(prefix === 5) return '🇦🇺 South Australia (Adelaide)';
+    if(prefix === 6) return '🇦🇺 Western Australia (Perth)';
+    if(prefix === 7) return '🇦🇺 Tasmania';
+    return '🇦🇺 Australia';
+  }
+  return null;
+}
+
+
 function lookupZip(zip, country){
   S.zip = zip;
   S.country = country || 'us';
@@ -1197,8 +1279,11 @@ function lookupZip(zip, country){
       d = WATER[zip] || DEF;
     } else {
       d = WATER_COUNTRY_DEF[country] || DEF;
-      // Use postcode as city approximation for non-US
-      const _co = ALL_COUNTRIES.find(c=>c.code===country); d = {...d, city: (_co?_co.flag:'') + ' ' + zip.toUpperCase() + ', ' + (_co?_co.name:'')};
+      const _co = ALL_COUNTRIES.find(c=>c.code===country);
+      // Get regional city name from postcode
+      const regionCity = getRegionFromPostcode(zip, country);
+      const cityName = regionCity || ((_co?_co.flag:'') + ' ' + zip.toUpperCase() + ', ' + (_co?_co.name:''));
+      d = {...d, city: cityName};
     }
     S.city = d.city;
     document.getElementById('locCity').textContent = d.city;
@@ -1320,7 +1405,7 @@ const delay=ms=>new Promise(r=>setTimeout(r,ms));
 async function runAnalysis(){goTo('s-loading');for(let i=0;i<5;i++){await delay(850);if(i>0)document.getElementById('ls'+(i-1)).className='ls done';document.getElementById('ls'+i).className='ls on';}await callClaude();}
 async function callClaude(){const water=WATER[S.zip]||DEF,waterIssues=water.items.map(i=>i.n).join(', '),roomsList=selRooms.map(r=>ROOM_NAMES[r]).join(', '),productList=S.products.length?S.products.map(p=>'- ['+ROOM_NAMES[p.room]+'] '+p.name+' ('+(p.risk==='r'?'Critical':p.risk==='y'?'Moderate':'Low')+' risk)').join('\n'):'- No specific products — use common household risk profile';
 const answerList=S.products.length?S.products.map(p=>'- ['+ROOM_NAMES[p.room]+'] User answered: "'+p.name+'" — risk level: '+(p.risk==='r'?'Critical':p.risk==='y'?'Moderate':'Low')).join('\n'):'- No answers recorded';
-const prompt='You are Homethy, a home health audit AI. The user has PAID. Return ONLY valid JSON, no markdown, no code fences.\n\nUser name: '+(S.name||'the user')+'\nCity: '+S.city+'\nRooms scanned: '+roomsList+'\nLocal water contaminants: '+waterIssues+'\n\nEXACT USER ANSWERS (use these verbatim in yourProduct.name — never substitute or assume a different product):\n'+answerList+'\n\nRULES:\n- yourProduct.name MUST be exactly what the user answered above\n- If user answered "No filter — tap water directly", show that, not "Brita"\n- If user answered "Gas stove", show that\n- Base severity on the actual risk level shown above\n- 3-5 findings, only for answers with Moderate or Critical risk\n- Score below 50 if any Critical finding\n- MANDATORY BRAND RULES (never use other brands for these): 1) cookware/pans/non-stick = WMF Permadur Premium or Zwilling Madura Plus; 2) air purifier = AirDoctor AD3500 or AD5500; 3) water filter/RO/drinking water = AquaTru Countertop RO System ($149); 4) shower filter/showerhead filter = Jolie Filtered Showerhead ($165). For ALL other swaps use only well-known trusted brands with strong reviews (e.g. Levoit, Coway, Lodge Cast Iron, EltaMD, Badger, Patagonia Organic, etc). Never suggest unknown or generic brands\n\nJSON format:\n{\n  "score": <0-100>,\n  "verdict": "<Critical Action Required|Action Recommended|Minor Improvements|Good Standing>",\n  "summary": "<2 sentences specific to city and their actual products>",\n  "pillars": {"products": <0-100>, "air": <0-100>, "water": <0-100>},\n  "findings": [\n    {\n      "room": "<Kitchen|Bedroom|Bathroom|Air & Light>",\n      "title": "<exact product they have - specific risk>",\n      "severity": "<Critical|Moderate|Low>",\n      "why": "<2 sentences: specific health mechanism + real citation (Stanford 2024, USGS 2023, NIH, EPA, IARC)>",\n      "yourProduct": {"icon":"<emoji>","name":"<EXACT answer user gave>","detail":"<3-word risk>","verdict":"<Risky|Check This|Safe>"},\n      "swap": {"icon":"<emoji>","name":"<specific real brand + model>","price":"<$XX-$XX>","why":"<one sentence benefit>"}\n    }\n  ]\n}';
+const prompt='You are Homethy, a home health audit AI. The user has PAID. Return ONLY valid JSON, no markdown, no code fences.\n\nUser name: '+(S.name||'the user')+'\nCity: '+S.city+' ('+S.zip+', '+S.country.toUpperCase()+')'+'\nRooms scanned: '+roomsList+'\nLocal water contaminants for '+S.city+': '+waterIssues+'\n\nEXACT USER ANSWERS (use these verbatim in yourProduct.name — never substitute or assume a different product):\n'+answerList+'\n\nRULES:\n- yourProduct.name MUST be exactly what the user answered above\n- If user answered "No filter — tap water directly", show that, not "Brita"\n- If user answered "Gas stove", show that\n- Base severity on the actual risk level shown above\n- 3-5 findings, only for answers with Moderate or Critical risk\n- Score below 50 if any Critical finding\n- MANDATORY BRAND RULES (never use other brands for these): 1) cookware/pans/non-stick = WMF Permadur Premium or Zwilling Madura Plus; 2) air purifier = AirDoctor AD3500 or AD5500; 3) water filter/RO/drinking water = AquaTru Countertop RO System ($149); 4) shower filter/showerhead filter = Jolie Filtered Showerhead ($165). For ALL other swaps use only well-known trusted brands with strong reviews (e.g. Levoit, Coway, Lodge Cast Iron, EltaMD, Badger, Patagonia Organic, etc). Never suggest unknown or generic brands\n\nJSON format:\n{\n  "score": <0-100>,\n  "verdict": "<Critical Action Required|Action Recommended|Minor Improvements|Good Standing>",\n  "summary": "<2 sentences specific to city and their actual products>",\n  "pillars": {"products": <0-100>, "air": <0-100>, "water": <0-100>},\n  "findings": [\n    {\n      "room": "<Kitchen|Bedroom|Bathroom|Air & Light>",\n      "title": "<exact product they have - specific risk>",\n      "severity": "<Critical|Moderate|Low>",\n      "why": "<2 sentences: specific health mechanism + real citation (Stanford 2024, USGS 2023, NIH, EPA, IARC)>",\n      "yourProduct": {"icon":"<emoji>","name":"<EXACT answer user gave>","detail":"<3-word risk>","verdict":"<Risky|Check This|Safe>"},\n      "swap": {"icon":"<emoji>","name":"<specific real brand + model>","price":"<$XX-$XX>","why":"<one sentence benefit>"}\n    }\n  ]\n}';
 try{const res=await fetch('/api/claude-proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,messages:[{role:'user',content:prompt}]})});const data=await res.json();const raw=(data.content&&data.content[0]&&data.content[0].text||'').replace(/```json|```/g,'').trim();const audit=JSON.parse(raw);await delay(450);document.getElementById('ls4').className='ls done';await delay(350);buildResults(audit);goTo('s-results');sendResultsEmail(audit.score,audit.verdict,audit.findings||[]);}catch(e){buildResults(getFallback());goTo('s-results');}}
 function getFallback(){const hasBadCook=S.products.some(p=>p.catId==='cookware'&&p.risk==='r'),hasBrita=S.products.some(p=>p.catId==='water'&&p.risk==='r'),hasGas=S.products.some(p=>p.catId==='stove'&&p.risk==='r'),hasFoam=S.products.some(p=>p.catId==='mattress'&&p.risk==='r');const finds=[];if(hasBadCook)finds.push({room:'Kitchen',title:'Non-stick cookware - PFAS exposure',severity:'Critical',why:'"PFOA-free" replaced PFOA with GenX — same PFAS family. 97% of Americans carry detectable PFAS (NIH/NIEHS).',yourProduct:{icon:'🍳',name:'Non-stick pan',detail:'PFAS coating daily',verdict:'Risky'},swap:{icon:'🥘',name:'Zwilling Madura Plus 28cm Pan',price:'$89-$35',why:'PFAS-free ceramic coating, no toxic coatings, induction compatible.'}});if(hasBrita)finds.push({room:'Kitchen',title:'Pitcher filter - PFAS not removed',severity:'Critical',why:'Brita removes taste but not PFAS, chromium-6, or nitrates. 45% of US tap water contains PFAS (USGS 2023).',yourProduct:{icon:'🚰',name:'Brita pitcher filter',detail:'Misses PFAS daily',verdict:'Risky'},swap:{icon:'💧',name:'AquaTru Countertop RO System',price:'$149',why:'Removes 99%+ of PFAS, no plumber needed, countertop install.'}});if(hasGas)finds.push({room:'Kitchen',title:'Gas stove - benzene exposure',severity:'Critical',why:'Gas stoves emit benzene — IARC Group 1 carcinogen — persisting in bedroom air 24h after cooking (Stanford 2024).',yourProduct:{icon:'🔥',name:'Gas stove (unvented)',detail:'Benzene every meal',verdict:'Risky'},swap:{icon:'✨',name:'Duxtop 9600LS Induction Burner',price:'$70-$80',why:'No combustion, no benzene, faster than gas.'}});if(hasFoam)finds.push({room:'Bedroom',title:'Memory foam mattress - VOC off-gassing',severity:'Moderate',why:'Conventional foam off-gases polyurethane and flame retardants during peak sleep hours.',yourProduct:{icon:'🛏',name:'Memory foam mattress',detail:'Off-gasses overnight',verdict:'Risky'},swap:{icon:'🌿',name:'Avocado Green Mattress (GOTS certified)',price:'From $1,399',why:'Certified organic, no flame retardant chemicals, GREENGUARD Gold.'}});if(!finds.length)finds.push({room:'General',title:'Daily product exposure - Baseline review',severity:'Moderate',why:'Indoor air averages 2-5x more polluted than outdoor (US EPA). Most homes have 3-5 products with significant health flags.',yourProduct:{icon:'🏠',name:'Your home (baseline)',detail:'General daily exposure',verdict:'Check This'},swap:{icon:'🌿',name:'Levoit Core 300S HEPA Air Purifier',price:'$99',why:'True HEPA removes VOCs and PM2.5, covers 219 sq ft.'}});const sc=finds.filter(f=>f.severity==='Critical').length>=2?34:finds.filter(f=>f.severity==='Critical').length===1?46:62;return{score:sc,verdict:sc<45?'Critical Action Required':sc<65?'Action Recommended':'Minor Improvements',summary:'Your '+selRooms.map(r=>ROOM_NAMES[r]).join(' + ')+' scan in '+S.city+' found '+finds.filter(f=>f.severity==='Critical').length+' critical findings. Most fixes cost under $100.',pillars:{products:sc-4,air:sc+8,water:sc-2},findings:finds};}
 function buildResults(audit){window._lastAudit=audit;
