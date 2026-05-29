@@ -600,7 +600,7 @@ nav{height:54px;flex-shrink:0;display:flex;align-items:center;padding:0 18px;bac
           <div class="dp-title" id="deepPayTitle">Kitchen Deep Scan</div>
           <p class="dp-sub" id="deepPaySub">15 targeted questions about your exact brands, habits, and setup — analyzed against health databases.</p>
           <div class="dp-incl">
-            <div class="dp-inc"><span id="deepPayRoomName2">Kitchen</span>-specific questions — 15 targeted prompts about your exact products</div>
+            <div class="dp-inc">15 targeted questions about your exact products &amp; brands</div>
             <div class="dp-inc">3 personalized vetted product swaps</div>
             <div class="dp-inc">Detailed findings with citations</div>
             <div class="dp-inc">Results added to your full report</div>
@@ -1529,7 +1529,17 @@ document.getElementById('gdRooms').innerHTML=selRooms.map(r=>`
     <div style="font-size:11px;color:var(--t3);text-align:left">${DEEP_DESC[r]||'3 personalized product swaps'}</div>
   </button>`).join('');
 }
-function buildFinding(f,i){const sc=f.severity==='Critical'?'r':f.severity==='Moderate'?'y':'s';const roomKey=Object.entries(ROOM_NAMES).find(e=>e[1]===f.room);const roomTag=f.room?'<span class="f-rt">'+(ROOM_ICONS[roomKey&&roomKey[0]]||'')+' '+f.room+'</span>':'';const cmp='<div class="cmp"><div class="cc bad"><div class="cc-lbl bad">Yours</div><span class="cc-icon">'+(f.yourProduct&&f.yourProduct.icon||'📦')+'</span><div class="cc-nm">'+(f.yourProduct&&f.yourProduct.name||'Your product')+'</div><div class="cc-det">'+(f.yourProduct&&f.yourProduct.detail||'')+'</div><span class="cc-badge bad">'+(f.yourProduct&&f.yourProduct.verdict||'Risky')+'</span></div><div class="cc-arr">→</div><div class="cc good"><div class="cc-lbl good">Swap to</div><span class="cc-icon">'+(f.swap&&f.swap.icon||'✅')+'</span><div class="cc-nm">'+(f.swap&&f.swap.name||'Safer option')+'</div><div class="cc-det">'+(f.swap&&f.swap.price||'')+'</div><span class="cc-badge good">Better ✓</span></div></div>';const swapUrl='https://www.google.com/search?q=buy+'+encodeURIComponent((f.swap&&f.swap.name)||'');const buy='<div class="f-buy"><a class="fbl" href="'+swapUrl+'" target="_blank" rel="noopener" style="text-decoration:none;display:flex;align-items:center;gap:12px;cursor:pointer"><div class="fbl-ico">'+(f.swap&&f.swap.icon||'🛒')+'</div><div class="fbl-inf"><div class="fbl-lbl">Homethy vetted swap</div><div class="fbl-prod">'+(f.swap&&f.swap.name||'Safer alternative')+'</div><div class="fbl-price">'+(f.swap&&f.swap.price||'')+' · '+(f.swap&&f.swap.why||'')+'</div></div><div class="fbl-arr">→</div></a></div>';return '<div class="finding" style="animation-delay:'+i*.1+'s"><div class="f-top">'+roomTag+'<div class="f-row"><div class="f-dot '+sc+'"></div><div class="f-col"><div class="f-nm">'+f.title+'</div><span class="f-sev '+sc+'">'+f.severity+'</span></div></div><p class="f-why">'+f.why+'</p></div>'+cmp+buy+'</div>';}
+function buildFinding(f,i){const sc=f.severity==='Critical'?'r':f.severity==='Moderate'?'y':'s';const roomKey=Object.entries(ROOM_NAMES).find(e=>e[1]===f.room);const roomTag=f.room?'<span class="f-rt">'+(ROOM_ICONS[roomKey&&roomKey[0]]||'')+' '+f.room+'</span>':'';const cmp='<div class="cmp"><div class="cc bad"><div class="cc-lbl bad">Yours</div><span class="cc-icon">'+(f.yourProduct&&f.yourProduct.icon||'📦')+'</span><div class="cc-nm">'+(f.yourProduct&&f.yourProduct.name||'Your product')+'</div><div class="cc-det">'+(f.yourProduct&&f.yourProduct.detail||'')+'</div><span class="cc-badge bad">'+(f.yourProduct&&f.yourProduct.verdict||'Risky')+'</span></div><div class="cc-arr">→</div><div class="cc good"><div class="cc-lbl good">Swap to</div><span class="cc-icon">'+(f.swap&&f.swap.icon||'✅')+'</span><div class="cc-nm">'+(f.swap&&f.swap.name||'Safer option')+'</div><div class="cc-det">'+(f.swap&&f.swap.price||'')+'</div><span class="cc-badge good">Better ✓</span></div></div>';const DIRECT_LINKS={
+  'WMF Permadur':'https://www.wmf.com/de/kochen-geniessen/pfannen/beschichtete-pfannen/permadur/',
+  'Zwilling Madura Plus':'https://www.zwilling.com/de/kochen/pfannen/pfannen-schmorpfannen/zwilling-madura-plus/',
+  'AirDoctor AD3500':'https://www.airdoctorpro.com/products/airdoctor-3500',
+  'AirDoctor AD5500':'https://www.airdoctorpro.com/products/airdoctor-5500',
+  'AquaTru Countertop RO System':'https://aquatru.com/products/aquatru-countertop-water-purifier',
+  'Jolie Filtered Showerhead':'https://jolieskinco.com/products/the-filtered-showerhead',
+};
+const swapName=(f.swap&&f.swap.name)||'';
+let swapUrl='https://www.google.com/search?q=buy+'+encodeURIComponent(swapName)+'+best+price';
+for(const[k,v] of Object.entries(DIRECT_LINKS)){if(swapName.toLowerCase().includes(k.toLowerCase())){swapUrl=v;break;}}const buy='<div class="f-buy"><a class="fbl" href="'+swapUrl+'" target="_blank" rel="noopener" style="text-decoration:none;display:flex;align-items:center;gap:12px;cursor:pointer"><div class="fbl-ico">'+(f.swap&&f.swap.icon||'🛒')+'</div><div class="fbl-inf"><div class="fbl-lbl">Homethy vetted swap</div><div class="fbl-prod">'+(f.swap&&f.swap.name||'Safer alternative')+'</div><div class="fbl-price">'+(f.swap&&f.swap.price||'')+' · '+(f.swap&&f.swap.why||'')+'</div></div><div class="fbl-arr">→</div></a></div>';return '<div class="finding" style="animation-delay:'+i*.1+'s"><div class="f-top">'+roomTag+'<div class="f-row"><div class="f-dot '+sc+'"></div><div class="f-col"><div class="f-nm">'+f.title+'</div><span class="f-sev '+sc+'">'+f.severity+'</span></div></div><p class="f-why">'+f.why+'</p></div>'+cmp+buy+'</div>';}
 function shareScore(){const score=document.getElementById('scNum').textContent,critCount=document.querySelectorAll('.f-sev.r').length,rooms=selRooms.map(r=>ROOM_NAMES[r]).join(', ');const text='My home scored '+score+'/100 on Homethy 🏠\n'+(critCount>0?'↳ '+critCount+' critical findings — PFAS, benzene & more\n':'')+'Scanned: '+rooms+'\n\nFind out what\'s hiding in YOUR home → homethy.com';if(navigator.share){navigator.share({title:'My Homethy Score — '+score+'/100',text,url:'https://homethy.com'}).then(()=>toast('Shared ✓','ok')).catch(()=>copyLink());}else{copyLink();}}
 function copyLink(){const score=document.getElementById('scNum').textContent;navigator.clipboard.writeText('https://homethy.com?score='+score+'&rooms='+selRooms.join(',')).then(()=>toast('Link copied — they\'ll see your score + every finding','ok')).catch(()=>toast('homethy.com — copy manually',''));}
 function downloadCard(){toast('Save as image — available in the live app','ok');}
@@ -1657,7 +1667,6 @@ function openDeepPick(){
 function selectDeepRoom(room){
   deepRoom = room;
   document.getElementById('deepPayRoomName').textContent = ROOM_NAMES[room];
-  document.getElementById('deepPayRoomName2').textContent = ROOM_NAMES[room];
   document.getElementById('deepPayIcon').textContent = ROOM_ICONS[room];
   document.getElementById('deepPayTitle').textContent = ROOM_NAMES[room] + ' Deep Scan';
   document.getElementById('deepPaySub').textContent = '15 targeted questions about your exact ' + ROOM_NAMES[room].toLowerCase() + ' products, brands, and habits.';
