@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://api.stripe.com/v1/payment_intents', {
       method: 'POST',
       headers: {
-        'Authorization': 'Bearer ' + process.env.STRIPE_SECRET_KEY,
+        'Authorization': 'Bearer ' + (process.env.STRIPE_SECRET_KEY || process.env.stripe_secret_key),
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
